@@ -9,7 +9,7 @@ AddBook(String Title, String Author, String Genre, int ISBN)
 	bool done = false;
 	while(done == false)
 	{		
-		if(Title || Author || Genre || ISBN == null)
+		if(Title == null || Author == null || Genre == null || ISBN == null)
 			new RuntimeError("Missing a value!");
 		done = true;
 	}
