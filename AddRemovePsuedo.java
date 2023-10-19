@@ -50,7 +50,7 @@ AddBook(String Title, String Author, String Genre, int ISBN)
 }
 
 
-AddUser(String Title, String Author, String Genre, int ISBN, int UserID)
+AddUser(String FN, String LN, Int PhoneNumber, int Address)
 {
 	//verify all text fields are filled
 	bool done = false;
@@ -140,94 +140,4 @@ void Remove()
 				}
 				default -> System.out.println("Something Went Wrong!");
 			}
-}
-void AddUser(String Title, String Author, String Genre, int ISBN, int UserID)
-{
-	//verify all text fields are filled
-	boolean done = false;
-	while(!done)
-	{
-		if(FN == null || LN == null || PhoneNumber == null || Address == null)
-			throw new RuntimeException("Missing a value!");
-		done = true;
-	}
-	
-	//verify user doesn't already exist
-	while(rs.next())
-	{
-		if(UserID == rs.getInt("UserID"))
-		{
-			System.out.println("Error! User Already Exists");
-			break;
-		}
-	}
-	
-	//insert new user into User database
-	String insertQuery = "INSERT INTO Users (FN, LN, PhoneNumber, Address) VALUES (?, ?, ?, ?)";
-	
-	try (PreparedStatement preparedStatement = connection.prepareStatement(insertQuery)) 
-	{
-		
-		// Set the parameter values for the INSERT statement.
-		preparedStatement.setString(1, FN);
-		preparedStatement.setString(2, LN);
-		preparedStatement.setString(3, PhoneNumber);
-		preparedStatement.setString(4, Address);
-				
-		// Execute the INSERT statement.
-		int rowsAffected = preparedStatement.executeUpdate();
-		if (rowsAffected > 0) 
-		{
-			System.out.println("New user record inserted successfully.");
-		} 
-		else 
-		{
-			System.out.println("Insert operation failed.");
-		}
-	}
-}
-
-void Remove()
-{
-	switch(MouseListener)
-	{
-		//compares unique id to database id and then deletes the entry if it exists
-		case User -> {
-			String deleteQuery = "DELETE FROM Users WHERE UserID = MouseListener";
-			
-			//Prepare and execute the SQL statement.
-			try (PreparedStatement preparedStatement = connection.prepareStatement(deleteQuery)) 
-			{
-				// Execute the DELETE statement.
-				int rowsAffected = preparedStatement.executeUpdate();
-				if (rowsAffected > 0) 
-				{
-					System.out.println("User record removed successfully.");
-				} 
-				else 
-				{
-					System.out.println("Delete operation failed.");
-				}
-			}
-		}
-		case Book -> {
-			String deleteQuery = "DELETE FROM Books WHERE BookID = MouseListener";
-			
-			//Prepare and execute the SQL statement.
-			try (PreparedStatement preparedStatement = connection.prepareStatement(deleteQuery)) 
-			{
-				// Execute the DELETE statement.
-				int rowsAffected = preparedStatement.executeUpdate();
-				if (rowsAffected > 0) 
-				{
-					System.out.println("Book record removed successfully.");
-				} 
-				else 
-				{
-					System.out.println("Delete operation failed.");
-				}
-			}
-		}
-		default -> System.out.println("Something Went Wrong!");
-	}
 }
