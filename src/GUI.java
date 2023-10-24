@@ -1,7 +1,8 @@
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -69,6 +70,13 @@ public class GUI {
     addUser.setPreferredSize(new Dimension(100, 50));
     addUser.setAlignmentX(Component.CENTER_ALIGNMENT);
     addUser.setMaximumSize(new Dimension(100, addUser.getMinimumSize().height));
+    // Add action listener to button that opens the AddUser window, code for AddUser is contained in the AddUser.java file
+    addUser.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        AddUser.AddUser(frame);
+      }
+    });
+
 
     // Check-Out Button
     checkOut = new JButton("Check-Out");
