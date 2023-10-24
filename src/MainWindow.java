@@ -1,28 +1,22 @@
+
+// Travis Tan
+// 10-23-23
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
-public class GUI {
-  private JFrame frame;
-  private JPanel leftPanel;
-  private JPanel rightPanel;
+public class MainWindow {
+  JFrame frame;
+  JPanel leftPanel;
+  JPanel rightPanel;
 
   private JButton addBook;
   private JButton addUser;
@@ -33,7 +27,7 @@ public class GUI {
 
   private JTextField mainSearch;
 
-  GUI() {
+  MainWindow() {
     // Main Window
     frame = new JFrame("Library Management System");
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -83,6 +77,20 @@ public class GUI {
     checkOut.setPreferredSize(new Dimension(100, 50));
     checkOut.setAlignmentX(Component.CENTER_ALIGNMENT);
     checkOut.setMaximumSize(new Dimension(100, checkOut.getMinimumSize().height));
+
+    // Action Listener for Check-Out Button\
+    // Pops up the Check Out Form
+    checkOut.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        SwingUtilities.invokeLater(new Runnable() {
+          @Override
+          public void run() {
+            new CheckOutForm(frame);
+          }
+        });
+      }
+    });
 
     // Check-In Button
     checkIn = new JButton("Check-In");
@@ -140,8 +148,9 @@ public class GUI {
     model = (DefaultTableModel) userTable.getModel();
     // Adding User Table to the Scroll Pane
     JScrollPane userPane = new JScrollPane(userTable);
+    userTable.getTableHeader().setReorderingAllowed(false);
 
-    // Adding Tables to Tabs then to the Main Frame
+    // Adding Tables to Tabs then to the TABLE Frame
     JTabbedPane tablePane = new JTabbedPane();
     tablePane.add("Books", bookPane);
     tablePane.add("Users", userPane);
