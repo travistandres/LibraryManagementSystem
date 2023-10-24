@@ -10,7 +10,7 @@ public class Main {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new GUI();
+                new MainWindow();
             }
         });
 
@@ -18,7 +18,7 @@ public class Main {
         // String url = "jdbc:mysql://localhost:3306/LibraryManagementSystem"; //
         // JDBCURL for the database
         // String username = "root"; // Your MySQL username
-        // String password = "Skatevolcom01!"; // Your MySQL password
+        // String password = ""; // Your MySQL password
         // // Step 2: Establish a connection to the database.
         // try {
         // Connection connection = DriverManager.getConnection(url, username, password);
