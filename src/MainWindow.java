@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.sql.SQLException;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -133,6 +134,14 @@ public class MainWindow {
     JScrollPane bookPane = new JScrollPane(bookTable);
     bookTable.getTableHeader().setReorderingAllowed(false);
 
+    //Adding data to Book Table DW 10/25/2023
+    Book book = new Book();
+    try {
+      book.displayBooks(model);
+    } catch (SQLException e){
+      e.printStackTrace();
+    }
+
     // User Table Column Names
     String[] columnNames1 = { "User ID", "Name", "Phone Number" };
     // Creating User Table
@@ -141,6 +150,14 @@ public class MainWindow {
     // Adding User Table to the Scroll Pane
     JScrollPane userPane = new JScrollPane(userTable);
     userTable.getTableHeader().setReorderingAllowed(false);
+
+    // Adding data to User Table
+    User user = new User();
+    try {
+      user.displayUsers(model);
+    } catch (SQLException e1) {
+      e1.printStackTrace();
+    }
 
     // Adding Tables to Tabs then to the TABLE Frame
     JTabbedPane tablePane = new JTabbedPane();

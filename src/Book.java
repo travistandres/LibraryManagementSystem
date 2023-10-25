@@ -1,67 +1,77 @@
 //DW 10/23/2023
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import javax.swing.table.DefaultTableModel;
+
 public class Book {
-    //#region variables
-    private String title;
-    private String author;
-    private String category;
-    private String ISBN;
-    private String datePublished;
-    private String publisher;
-    private int numOfPages;
-    //#endregion
-    Book(String title, String author, String category, String ISBN, String datePublished, String publisher, int numOfPages) {
-        setTitle(title);
-        setAuthor(author);
-        setCategory(category);
-        setISBN(ISBN);
-        setDatePublished(datePublished);
-        setPublisher(publisher);
-        setNumOfPages(numOfPages);
+    private final String url = "jdbc:mysql://librarydatabase.cupwod9sczsb.us-east-2.rds.amazonaws.com:3306/LibraryManagementSystem";
+    private final String username = "admin"; // Your MySQL username
+    private final String password = "2QH03UdHKY8t9TT4PeSb"; // Your MySQL password
+    private Connection connection;
+    
+    public void deleteBook(int id) throws SQLException{
+      try{
+        connection = DriverManager.getConnection(url, username, password);
+        try{
+          String sql = "DELETE FROM book WHERE book_id = ?";
+          PreparedStatement ps = connection.prepareStatement(sql);
+          ps.setInt(1, id);
+          ps.executeUpdate();
+          connection.close();
+        } catch (Exception e){
+          e.printStackTrace();
+        }
+      } catch (Exception e){
+        e.printStackTrace();
+      }
     }
-    //#region Accessors
-    public String getTitle(){
-        return title;
+    public void addBook(String title, String author, int id, String isbn) throws SQLException{
+        try{
+            connection = DriverManager.getConnection(url, username, password);
+            try{
+              String sql = "INSERT INTO book (book_id, title, author, isbn)" + "VALUES (?, ?, ?, ?)";
+              PreparedStatement ps = connection.prepareStatement(sql);
+              ps.setInt(1, id);
+              ps.setString(2, title);
+              ps.setString(3, author);
+              ps.setString(4, isbn);
+              ps.executeUpdate();
+              connection.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-    public String getAuthor(){
-        return author;
+    public void displayBooks(DefaultTableModel userModel) throws SQLException{
+    try {
+      connection = DriverManager.getConnection(url, username, password);
+      String query = "SELECT book_id, title, author, isbn FROM book";
+      try {
+        PreparedStatement ps = connection.prepareStatement(query);
+        ResultSet rs = ps.executeQuery(query);
+
+        while (rs.next()) {
+          String id = rs.getString("book_id");
+          String title = rs.getString("title");
+          String author = rs.getString("author");
+          String isbn = rs.getString("isbn");
+
+          String[] data = { id, title, author, null ,isbn};
+
+          userModel.addRow(data);
+        }
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
+      connection.close();
+    } catch (SQLException e) {
+      e.printStackTrace();
     }
-    public String getCategory(){
-        return category;
-    }
-    public String getISBN(){
-        return ISBN;
-    }
-    public String getDatePublished(){
-        return datePublished;
-    }
-    public String getPublisher(){
-        return publisher;
-    }
-    public int getNumOfPages(){
-        return numOfPages;
-    }
-    //#endregion
-    //#region Mutators (may not be needed)
-    public void setTitle(String title){
-        this.title = title;
-    }
-    public void setAuthor(String author){
-        this.author = author;
-    }
-    public void setCategory(String category){
-        this.category = category;
-    }
-    public void setISBN(String ISBN){
-        this.ISBN = ISBN;
-    }
-    public void setDatePublished(String datePublished){
-        this.datePublished = datePublished;
-    }
-    public void setPublisher(String publisher){
-        this.publisher = publisher;
-    }
-    public void setNumOfPages(int numOfPages){
-        this.numOfPages = numOfPages;
-    }
-    //#endregion
+  }
 }
