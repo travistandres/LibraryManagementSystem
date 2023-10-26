@@ -11,7 +11,9 @@ import java.sql.SQLException;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 
 public class MainWindow {
   JFrame frame;
@@ -23,7 +25,8 @@ public class MainWindow {
   private JButton checkIn;
   private JButton checkOut;
 
-  private DefaultTableModel model;
+  private DefaultTableModel bookModel;
+  private DefaultTableModel userModel;
 
   private JTextField mainSearch;
 
@@ -38,6 +41,7 @@ public class MainWindow {
 
     // Main Page
     JPanel main = new JPanel(new BorderLayout());
+    main.setBorder(BorderFactory.createEmptyBorder(15, 0, 15, 0));
     frame.add(main);
 
     // Left Panel
@@ -91,6 +95,20 @@ public class MainWindow {
     checkIn.setAlignmentX(Component.CENTER_ALIGNMENT);
     checkIn.setMaximumSize(new Dimension(100, checkIn.getMinimumSize().height));
 
+    // Action Listener for Check-In Button
+    // Pops up the Check Out Form
+    checkIn.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        SwingUtilities.invokeLater(new Runnable() {
+          @Override
+          public void run() {
+            new CheckInForm(frame);
+          }
+        });
+      }
+    });
+
     // Adding Buttons to the Left Panel
     // Box.createRigidArea is just for padding (spacing) between the buttons
     leftPanel.add(Box.createRigidArea(new Dimension(0, 150)));
@@ -129,32 +147,50 @@ public class MainWindow {
 
     // Creating Book Table
     JTable bookTable = new JTable(new DefaultTableModel(null, columnNames));
-    model = (DefaultTableModel) bookTable.getModel();
+    bookModel = (DefaultTableModel) bookTable.getModel();
+    bookTable.getTableHeader().setReorderingAllowed(false);
+    bookTable.setDefaultEditor(Object.class, null);
+
     // Adding Book Table to the Scroll Pane
     JScrollPane bookPane = new JScrollPane(bookTable);
-    bookTable.getTableHeader().setReorderingAllowed(false);
 
-    //Adding data to Book Table DW 10/25/2023
+    // Centering Text on each cell on Book Table
+    DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+    centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+    for (int i = 0; i < columnNames.length; i++) {
+      bookTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+    }
+
+    // Adding data to Book Table DW 10/25/2023
     Book book = new Book();
     try {
-      book.displayBooks(model);
-    } catch (SQLException e){
+      book.displayBooks(bookModel);
+    } catch (SQLException e) {
       e.printStackTrace();
     }
 
     // User Table Column Names
     String[] columnNames1 = { "User ID", "Name", "Phone Number" };
+
     // Creating User Table
     JTable userTable = new JTable(new DefaultTableModel(null, columnNames1));
-    model = (DefaultTableModel) userTable.getModel();
+    userModel = (DefaultTableModel) userTable.getModel();
+    userTable.getTableHeader().setReorderingAllowed(false);
+    userTable.setDefaultEditor(Object.class, null);
+
     // Adding User Table to the Scroll Pane
     JScrollPane userPane = new JScrollPane(userTable);
-    userTable.getTableHeader().setReorderingAllowed(false);
+
+    // Centering Text on each cell on User Table
+    centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+    for (int i = 0; i < columnNames1.length; i++) {
+      userTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+    }
 
     // Adding data to User Table
     User user = new User();
     try {
-      user.displayUsers(model);
+      user.displayUsers(userModel);
     } catch (SQLException e1) {
       e1.printStackTrace();
     }

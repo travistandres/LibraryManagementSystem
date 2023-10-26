@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.sql.Date;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -14,6 +16,7 @@ import java.util.concurrent.Flow;
 
 import javax.swing.*;
 import javax.swing.JFormattedTextField.AbstractFormatter;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import org.jdatepicker.JDatePicker;
@@ -31,8 +34,8 @@ public class CheckOutForm {
   JPanel leftPanel;
   JPanel rightPanel;
 
-  JTextField idField;
-  JTextField isbnField;
+  JTextField userField;
+  JTextField bookField;
   JTextField searchBar;
 
   JButton cancel;
@@ -40,7 +43,12 @@ public class CheckOutForm {
 
   UtilDateModel dateModel;
 
-  private DefaultTableModel model;
+  private DefaultTableModel bookModel;
+  private DefaultTableModel userModel;
+
+  User user = new User();
+  Book book = new Book();
+  DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
 
   CheckOutForm(JFrame frame) {
     // Check Out Form Window
@@ -63,23 +71,23 @@ public class CheckOutForm {
 
     // Panel that contains the User Input
     leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-    leftPanel.setPreferredSize(new Dimension(330, 438));
+    leftPanel.setPreferredSize(new Dimension(250, 438));
     mainPanel.add(leftPanel, BorderLayout.WEST);
 
     // User Input Panel
     JPanel userInputPanel = new JPanel(new GridBagLayout());
-    userInputPanel.setPreferredSize(new Dimension(300, 200));
+    userInputPanel.setPreferredSize(new Dimension(230, 200));
     GridBagConstraints m = new GridBagConstraints();
     leftPanel.add(userInputPanel);
 
     // Text labels
-    ID = new JLabel("ID #:");
-    ISBN = new JLabel("ISBN:");
+    ID = new JLabel("User ID:");
+    ISBN = new JLabel("Book ID:");
     returnDate = new JLabel("Return Date:");
 
     // Text Fields
-    idField = new JTextField();
-    isbnField = new JTextField();
+    userField = new JTextField();
+    bookField = new JTextField();
 
     // ID JLabel
     m.gridx = 0;
@@ -111,7 +119,7 @@ public class CheckOutForm {
     m.weightx = 1;
     m.fill = GridBagConstraints.HORIZONTAL;
     m.insets = new Insets(5, 5, 5, 5);
-    userInputPanel.add(idField, m);
+    userInputPanel.add(userField, m);
 
     // ISBN text field
     m.gridx = 1;
@@ -119,7 +127,7 @@ public class CheckOutForm {
     m.weightx = 1;
     m.fill = GridBagConstraints.HORIZONTAL;
     m.insets = new Insets(5, 5, 5, 5);
-    userInputPanel.add(isbnField, m);
+    userInputPanel.add(bookField, m);
 
     // Date Picker
     dateModel = new UtilDateModel();
@@ -142,7 +150,7 @@ public class CheckOutForm {
     // Check Out Panel
     JPanel checkOutJPanel = new JPanel();
     checkOutJPanel.setLayout(new BoxLayout(checkOutJPanel, BoxLayout.Y_AXIS));
-    checkOutJPanel.setPreferredSize(new Dimension(300, 30));
+    checkOutJPanel.setPreferredSize(new Dimension(230, 30));
     leftPanel.add(checkOutJPanel);
 
     // check out button
@@ -154,8 +162,7 @@ public class CheckOutForm {
     checkOut.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        // Travis Tan 10-23-23
-        // Gets the input of the Calendar input to a string
+        // Gets the input from the form and then puts it into the database
         getInput();
       }
     });
@@ -163,7 +170,7 @@ public class CheckOutForm {
     // Panel that contains the Cancel button
     JPanel cancelPanel = new JPanel();
     cancelPanel.setLayout(new BoxLayout(cancelPanel, BoxLayout.Y_AXIS));
-    cancelPanel.setPreferredSize(new Dimension(330, 238));
+    cancelPanel.setPreferredSize(new Dimension(230, 238));
     leftPanel.add(cancelPanel);
 
     // Cancel Button
@@ -198,44 +205,83 @@ public class CheckOutForm {
 
     // Creating Book Table
     JTable bookTable = new JTable(new DefaultTableModel(null, columnNames));
-    model = (DefaultTableModel) bookTable.getModel();
+    bookModel = (DefaultTableModel) bookTable.getModel();
+    bookTable.getTableHeader().setReorderingAllowed(false);
+    bookTable.setDefaultEditor(Object.class, null);
+
     // Adding Book Table to the Scroll Pane
     JScrollPane bookPane = new JScrollPane(bookTable);
-    bookTable.getTableHeader().setReorderingAllowed(false);
+
+    // Centering Text on each cell on Book Table
+    centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+    for (int i = 0; i < columnNames.length; i++) {
+      bookTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+    }
+
+    // Adding data to User Table
+    try {
+      book.displayBooks(bookModel);
+    } catch (SQLException e1) {
+      e1.printStackTrace();
+    }
 
     // User Table Column Names
     String[] columnNames1 = { "User ID", "Name", "Phone Number" };
+
     // Creating User Table
     JTable userTable = new JTable(new DefaultTableModel(null, columnNames1));
-    model = (DefaultTableModel) userTable.getModel();
+    userModel = (DefaultTableModel) userTable.getModel();
+    userTable.getTableHeader().setReorderingAllowed(false);
+    userTable.setDefaultEditor(Object.class, null);
+
     // Adding User Table to the Scroll Pane
     JScrollPane userPane = new JScrollPane(userTable);
-    userTable.getTableHeader().setReorderingAllowed(false);
+
+    // Centering Text on each cell on the User Table
+    centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+    for (int i = 0; i < columnNames1.length; i++) {
+      userTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+    }
+
+    // Adding data to User Table
+    try {
+      user.displayUsers(userModel);
+    } catch (SQLException e1) {
+      e1.printStackTrace();
+    }
 
     // Adding Tables to Tabs then to the TABLE Frame
     JTabbedPane tablePane = new JTabbedPane();
     tablePane.add("Books", bookPane);
     tablePane.add("Users", userPane);
-    tablePane.setPreferredSize(new Dimension(350, 350));
+    tablePane.setPreferredSize(new Dimension(420, 350));
     rightPanel.add(tablePane);
 
     dialog.setVisible(true);
   }
 
   void getInput() {
-    if (idField.getText().isEmpty() || isbnField.getText().isEmpty() || dateModel.getValue() == null) {
+    if (userField.getText().isEmpty() || bookField.getText().isEmpty() || dateModel.getValue() == null) {
       JOptionPane.showMessageDialog(null, "Not All Fields Were Filled Out.", "Invalid TextFields",
           JOptionPane.ERROR_MESSAGE);
     } else {
-      String date = dateModel.getValue().toString();
-      System.out.println(date);
+      int userID = Integer.parseInt(userField.getText());
+      int bookID = Integer.parseInt(bookField.getText());
+      int day = dateModel.getDay();
+      // + 1 because when selecting from the calendar GUI, it reduces the month by 1,
+      // probably an error in the package code
+      int month = dateModel.getMonth() + 1;
+      int year = dateModel.getYear();
+      String date = year + "-" + month + "-" + day;
+
+      // insert method here for adding a transaction into the Transaction Table
     }
   }
 
   // Format for the Date Picker
   static class DateLabelFormatter extends AbstractFormatter {
 
-    private String datePattern = "MM-dd-yyyy";
+    private String datePattern = "yyyy-MM-dd";
     private SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
 
     @Override
