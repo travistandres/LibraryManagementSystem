@@ -1,25 +1,34 @@
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
+// Jaxon Elwell
+// 10-26-2020
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class AddUser 
-{
-    public static void AddUser(JFrame parent) {
-        // Create a new JDialog to hold the popup window
-        JDialog popup = new JDialog(parent, "Add User", true);
-        popup.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        popup.setSize(446, 326);
-        popup.setLocationRelativeTo(null);
-        popup.setResizable(false);
+public class AddUser {
+    public static void openAddUserGUI(JFrame parent) {
+        // Create the main JFrame for the Add User GUI
+        JFrame addUserFrame = new JFrame("Add User");
+        addUserFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        addUserFrame.setSize(400, 550);
+        addUserFrame.setLocationRelativeTo(parent);
 
-        // Create a new JPanel to hold the text fields and button
-        JPanel panel = new JPanel(new GridLayout(0, 2, 10, 10)); // GridLayout to arrange components in rows and columns
-        panel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        // Create a main panel with GridBagLayout and add some padding
+        JPanel mainPanel = new JPanel(new GridBagLayout());
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        addUserFrame.add(mainPanel);
 
-        // Create labels and text fields for user input
+        // Create a panel for the title label
+        JPanel titlePanel = new JPanel();
+        JLabel titleLabel = new JLabel("Add User");
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        titlePanel.add(titleLabel);
+
+        // Create a panel for the text fields with padding
+        JPanel textFieldPanel = new JPanel(new GridLayout(3, 2, 40, 40));
+        textFieldPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+
         JLabel firstNameLabel = new JLabel("First Name:");
         JTextField firstName = new JTextField();
         JLabel lastNameLabel = new JLabel("Last Name:");
@@ -27,30 +36,78 @@ public class AddUser
         JLabel addressLabel = new JLabel("Address:");
         JTextField address = new JTextField();
 
-        // Create the close button
-        JButton closeButton = new JButton("Close");
-        closeButton.addActionListener(new ActionListener() {
+        textFieldPanel.add(firstNameLabel);
+        textFieldPanel.add(firstName);
+        textFieldPanel.add(lastNameLabel);
+        textFieldPanel.add(lastName);
+        textFieldPanel.add(addressLabel);
+        textFieldPanel.add(address);
+
+        // Create a panel for the Add and Add Another buttons with padding
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+
+        JButton addButton = new JButton("Add");
+        addButton.setPreferredSize(new Dimension(115, 30)); // Set preferred size
+        addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                popup.dispose(); // Close the popup
+                // Save the text entered in the text fields
+                String firstNameText = firstName.getText();
+                String lastNameText = lastName.getText();
+                String addressText = address.getText();
             }
         });
 
-        // Add components to the panel
-        panel.add(firstNameLabel);
-        panel.add(firstName);
-        panel.add(lastNameLabel);
-        panel.add(lastName);
-        panel.add(addressLabel);
-        panel.add(address);
-        panel.add(new JLabel()); // Empty label for spacing
-        panel.add(closeButton);
+        // Add some rigid space between the buttons
+        buttonPanel.add(addButton);
+        buttonPanel.add(Box.createRigidArea(new Dimension(10, 0))); // Space between buttons
 
-        // Add the panel to the popup
-        popup.add(panel);
+        JButton addAnotherButton = new JButton("Add Another");
+        addAnotherButton.setPreferredSize(new Dimension(115, 30)); // Set preferred size
+        addAnotherButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                openAddUserGUI(parent); // Open another Add User GUI
+            }
+        });
 
-        // Make the popup visible after adding components
-        popup.setVisible(true);
+        // Add glue components to center-align the buttons
+        buttonPanel.add(addAnotherButton);
+        buttonPanel.add(Box.createHorizontalGlue());
+
+        // Create a panel for the Cancel button with padding
+        JPanel cancelButtonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JButton closeButton = new JButton("Cancel");
+        closeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addUserFrame.dispose(); // Close the Add User GUI
+            }
+        });
+        cancelButtonPanel.add(closeButton);
+
+        // Specify GridBagLayout constraints to center-align the title panel
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new Insets(0, 0, 60, 0); // Add space below the title
+        mainPanel.add(titlePanel, gbc);
+
+        // Specify GridBagLayout constraints to center-align the text field panel
+        gbc.gridy = 1;
+        mainPanel.add(textFieldPanel, gbc);
+
+        // Specify GridBagLayout constraints for the button panel
+        gbc.gridy = 2;
+        mainPanel.add(buttonPanel, gbc);
+
+        // Specify GridBagLayout constraints for the close button panel
+        gbc.gridy = 3;
+        mainPanel.add(cancelButtonPanel, gbc);
+
+        // Make the main frame visible
+        addUserFrame.setVisible(true);
     }
-
 }

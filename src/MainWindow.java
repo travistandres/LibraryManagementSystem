@@ -67,7 +67,7 @@ public class MainWindow {
     // Add action listener to button that opens the AddUser window, code for AddUser is contained in the AddUser.java file
     addUser.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        AddUser.AddUser(frame);
+        AddUser.openAddUserGUI(frame);
       }
     });
 
