@@ -26,22 +26,27 @@ public class AddUser {
         titlePanel.add(titleLabel);
 
         // Create a panel for the text fields with padding
-        JPanel textFieldPanel = new JPanel(new GridLayout(3, 2, 40, 40));
-        textFieldPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+        JPanel textFieldPanel = new JPanel(new GridLayout(4, 2, 40, 20));
+        textFieldPanel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
 
         JLabel firstNameLabel = new JLabel("First Name:");
         JTextField firstName = new JTextField();
         JLabel lastNameLabel = new JLabel("Last Name:");
         JTextField lastName = new JTextField();
-        JLabel addressLabel = new JLabel("Address:");
-        JTextField address = new JTextField();
+        JLabel phoneLabel = new JLabel("Phone Number:");
+        JTextField phone = new JTextField();
+        JLabel idLabel = new JLabel("Student ID:");
+        JTextField id = new JTextField();
+
 
         textFieldPanel.add(firstNameLabel);
         textFieldPanel.add(firstName);
         textFieldPanel.add(lastNameLabel);
         textFieldPanel.add(lastName);
-        textFieldPanel.add(addressLabel);
-        textFieldPanel.add(address);
+        textFieldPanel.add(phoneLabel);
+        textFieldPanel.add(phone);
+        textFieldPanel.add(idLabel);
+        textFieldPanel.add(id);
 
         // Create a panel for the Add and Add Another buttons with padding
         JPanel buttonPanel = new JPanel();
@@ -56,7 +61,10 @@ public class AddUser {
                 // Save the text entered in the text fields
                 String firstNameText = firstName.getText();
                 String lastNameText = lastName.getText();
-                String addressText = address.getText();
+                String phoneNumber = phone.getText();
+                String studentID = id.getText();
+                // Call the addUser method in the User class to add the user to the database
+                User.addUser(firstNameText +" "+ lastNameText, phoneNumber, studentID);
             }
         });
 
@@ -69,7 +77,16 @@ public class AddUser {
         addAnotherButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                // Save the text entered in the text fields
+                String firstNameText = firstName.getText();
+                String lastNameText = lastName.getText();
+                String phoneNumber = phone.getText();
+                String studentID = id.getText();
+                // Call the addUser method in the User class to add the user to the database
+                User.addUser(firstNameText + " " + lastNameText, phoneNumber, studentID);
                 openAddUserGUI(parent); // Open another Add User GUI
+                // Close the current Add User GUI
+                addUserFrame.dispose();
             }
         });
 
