@@ -58,6 +58,12 @@ public class MainWindow {
     addBook.setPreferredSize(new Dimension(100, 50));
     addBook.setAlignmentX(Component.CENTER_ALIGNMENT);
     addBook.setMaximumSize(new Dimension(100, addBook.getMinimumSize().height));
+    // Add action listener to button that opens the AddUser window, code for AddUser is contained in the AddUser.java file
+    addBook.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        AddBook.openBookGUI(frame);
+      }
+    });
 
     // Add User Button
     addUser = new JButton("Add User");
