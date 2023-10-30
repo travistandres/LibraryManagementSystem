@@ -64,7 +64,13 @@ public class AddBook {
                 String isbnNumber = isbn.getText();
                 String authorText = author.getText();
                 // Call the addBook method in the Book class to add the book to the database
-                Book.addBook(titleText,  genreText, isbnNumber, authorText);
+                // Try catch block for the addBook method
+                try {
+                    Book.addBook(titleText,  genreText, isbnNumber, authorText);
+                } catch (Exception exception) {
+                    errorPopup();
+                    exception.printStackTrace();
+                }
             }
         });
 
@@ -83,7 +89,13 @@ public class AddBook {
                 String isbnNumber = isbn.getText();
                 String authorText = author.getText();
                 // Call the addBook method in the Book class to add the book to the database
-                Book.addBook(titleText,  genreText, isbnNumber, authorText);
+                // Try catch block for the addBook method
+                try {
+                    Book.addBook(titleText,  genreText, isbnNumber, authorText);
+                } catch (Exception exception) {
+                    errorPopup();
+                    exception.printStackTrace();
+                }
                 openBookGUI(parent); // Open another Add User GUI
                 // Close the current Add User GUI
                 addBookFrame.dispose();
@@ -126,5 +138,23 @@ public class AddBook {
 
         // Make the main frame visible
         addBookFrame.setVisible(true);
+    }
+
+    // Method to display an error popup
+    public static void errorPopup() {
+        JFrame errorFrame = new JFrame("Error");
+        errorFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        errorFrame.setSize(300, 150);
+        errorFrame.setLocationRelativeTo(null);
+
+        JPanel errorPanel = new JPanel(new GridBagLayout());
+        errorPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        errorFrame.add(errorPanel);
+
+        JLabel errorLabel = new JLabel("Error adding book.");
+        errorLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        errorPanel.add(errorLabel);
+
+        errorFrame.setVisible(true);
     }
 }

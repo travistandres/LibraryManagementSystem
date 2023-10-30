@@ -68,6 +68,7 @@ public class AddUser {
                 try {
                     User.addUser(firstNameText +" "+ lastNameText, phoneNumber, studentID);
                 } catch (Exception exception) {
+                    errorPopup();
                     exception.printStackTrace();
                 }
             }
@@ -92,6 +93,7 @@ public class AddUser {
                 try {
                     User.addUser(firstNameText +" "+ lastNameText, phoneNumber, studentID);
                 } catch (Exception exception) {
+                    errorPopup();
                     exception.printStackTrace();
                 }
                 openAddUserGUI(parent); // Open another Add User GUI
@@ -137,4 +139,23 @@ public class AddUser {
         // Make the main frame visible
         addUserFrame.setVisible(true);
     }
+
+    // Method to make an error popup for when adding a user fails
+    public static void errorPopup() {
+        JFrame errorFrame = new JFrame("Error");
+        errorFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        errorFrame.setSize(300, 150);
+        errorFrame.setLocationRelativeTo(null);
+
+        JPanel errorPanel = new JPanel(new GridBagLayout());
+        errorPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        errorFrame.add(errorPanel);
+
+        JLabel errorLabel = new JLabel("Error adding user.");
+        errorLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        errorPanel.add(errorLabel);
+
+        errorFrame.setVisible(true);
+    }
+
 }
