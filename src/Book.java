@@ -4,15 +4,12 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import javax.swing.table.DefaultTableModel;
-
 public class Book {
     private final String url = "jdbc:mysql://librarydatabase.cupwod9sczsb.us-east-2.rds.amazonaws.com:3306/LibraryManagementSystem";
     private final String username = "admin"; // Your MySQL username
     private final String password = "2QH03UdHKY8t9TT4PeSb"; // Your MySQL password
     private Connection connection;
-    
     public void deleteBook(int id) throws SQLException{
       try{
         connection = DriverManager.getConnection(url, username, password);
@@ -48,7 +45,7 @@ public class Book {
             e.printStackTrace();
         }
     }
-    public void displayBooks(DefaultTableModel userModel) throws SQLException{
+    public void displayBooks(DefaultTableModel bookModel) throws SQLException{
     try {
       connection = DriverManager.getConnection(url, username, password);
       String query = "SELECT book_id, title, author, isbn FROM book";
@@ -64,7 +61,7 @@ public class Book {
 
           String[] data = { id, title, author, null ,isbn};
 
-          userModel.addRow(data);
+          bookModel.addRow(data);
         }
       } catch (SQLException e) {
         e.printStackTrace();
