@@ -64,7 +64,12 @@ public class AddUser {
                 String phoneNumber = phone.getText();
                 String studentID = id.getText();
                 // Call the addUser method in the User class to add the user to the database
-                User.addUser(firstNameText +" "+ lastNameText, phoneNumber, studentID);
+                // Try catch block for the addUser method
+                try {
+                    User.addUser(firstNameText +" "+ lastNameText, phoneNumber, studentID);
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
             }
         });
 
@@ -83,7 +88,12 @@ public class AddUser {
                 String phoneNumber = phone.getText();
                 String studentID = id.getText();
                 // Call the addUser method in the User class to add the user to the database
-                User.addUser(firstNameText + " " + lastNameText, phoneNumber, studentID);
+                // Try catch block for the addUser method
+                try {
+                    User.addUser(firstNameText +" "+ lastNameText, phoneNumber, studentID);
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
                 openAddUserGUI(parent); // Open another Add User GUI
                 // Close the current Add User GUI
                 addUserFrame.dispose();
