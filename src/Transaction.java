@@ -34,12 +34,13 @@ public class Transaction {
         try{
             connection = DriverManager.getConnection(url, username, password);
             try{
-                String query = "SELECT * FROM transactions WHERE user_id = " + user_id;
+                String query = "SELECT book_id, returnDate FROM transactions WHERE user_id = " + user_id;
                 PreparedStatement ps = connection.prepareStatement(query);
                 ResultSet rs = ps.executeQuery(query);
                 while (rs.next()) {
                     try{
-                        String bookQuery = "SELECT isbn, title FROM book";
+                        int book_id = rs.getInt("book_id");
+                        String bookQuery = "SELECT isbn, title FROM book where book_id = " + book_id;
                         PreparedStatement bookStatement = connection.prepareStatement(bookQuery);
                         ResultSet bookSet = bookStatement.executeQuery(bookQuery);
 
@@ -49,6 +50,7 @@ public class Transaction {
 
                         String[] data = {isbn, title, returnDate.toString()};
                         transactionModel.addRow(data);
+
                     } catch (SQLException e){
                         e.printStackTrace();
                     }
@@ -57,6 +59,7 @@ public class Transaction {
             } catch (SQLException e){
                 e.printStackTrace();
             }
+            connection.close();
         } catch (SQLException e){
             e.printStackTrace();
         }
