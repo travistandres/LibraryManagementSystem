@@ -53,58 +53,91 @@ public class AddBook {
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
 
+
+        // Add Button
         JButton addButton = new JButton("Add");
         addButton.setPreferredSize(new Dimension(115, 30)); // Set preferred size
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                // Check if any of the text fields are empty
+                if(title.getText().isEmpty() || genre.getText().isEmpty() || isbn.getText().isEmpty() || author.getText().isEmpty()) 
+                {
+                    errorPopup();
+                    return;
+                }
+
+                // Check if the ISBN is a duplicate
+                // todo
+
                 // Save the text entered in the text fields
                 String titleText = title.getText();
                 String genreText = genre.getText();
-                String isbnNumber = isbn.getText();
+                String isbnString = isbn.getText();
+                int isbnNumber = Integer.parseInt(isbn.getText());
                 String authorText = author.getText();
-                // Call the addBook method in the Book class to add the book to the database
                 // Try catch block for the addBook method
-                try {
-                    Book.addBook(titleText,  genreText, isbnNumber, authorText);
+                try 
+                {
+                    Book book = new Book();
+                    book.addBook(titleText, authorText, isbnNumber, isbnString); // Call the addBook method in the Book class to add the book to the database
+                    addBookFrame.dispose(); // Close the Add Book GUI
                 } catch (Exception exception) {
                     errorPopup();
                     exception.printStackTrace();
                 }
             }
         });
+
 
         // Add some rigid space between the buttons
         buttonPanel.add(addButton);
         buttonPanel.add(Box.createRigidArea(new Dimension(10, 0))); // Space between buttons
 
+
+        // Add Another Button
         JButton addAnotherButton = new JButton("Add Another");
         addAnotherButton.setPreferredSize(new Dimension(115, 30)); // Set preferred size
         addAnotherButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                // Check if any of the text fields are empty
+                if(title.getText().isEmpty() || genre.getText().isEmpty() || isbn.getText().isEmpty() || author.getText().isEmpty()) 
+                {
+                    errorPopup();
+                    return;
+                }
+
+
+                // Check if the ISBN is a duplicate
+                // todo
+
                 // Save the text entered in the text fields
                 String titleText = title.getText();
                 String genreText = genre.getText();
-                String isbnNumber = isbn.getText();
+                String isbnString = isbn.getText();
+                int isbnNumber = Integer.parseInt(isbn.getText());
                 String authorText = author.getText();
                 // Call the addBook method in the Book class to add the book to the database
                 // Try catch block for the addBook method
-                try {
-                    Book.addBook(titleText,  genreText, isbnNumber, authorText);
+                try 
+                {
+                    Book book = new Book();
+                    book.addBook(titleText, authorText, isbnNumber, isbnString); // Call the addBook method in the Book class to add the book to the database
+                    openBookGUI(parent); // Open another Add Book GUI
+                    addBookFrame.dispose(); // Close the Add Book GUI
                 } catch (Exception exception) {
                     errorPopup();
                     exception.printStackTrace();
                 }
-                openBookGUI(parent); // Open another Add User GUI
-                // Close the current Add User GUI
-                addBookFrame.dispose();
             }
         });
+
 
         // Add glue components to center-align the buttons
         buttonPanel.add(addAnotherButton);
         buttonPanel.add(Box.createHorizontalGlue());
+
 
         // Create a panel for the Cancel button with padding
         JPanel cancelButtonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -116,6 +149,7 @@ public class AddBook {
             }
         });
         cancelButtonPanel.add(closeButton);
+
 
         // Specify GridBagLayout constraints to center-align the title panel
         GridBagConstraints gbc = new GridBagConstraints();
@@ -139,6 +173,7 @@ public class AddBook {
         // Make the main frame visible
         addBookFrame.setVisible(true);
     }
+
 
     // Method to display an error popup
     public static void errorPopup() {

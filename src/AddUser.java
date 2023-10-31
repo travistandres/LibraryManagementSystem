@@ -53,20 +53,34 @@ public class AddUser {
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
 
+
+        // Add Button
         JButton addButton = new JButton("Add");
         addButton.setPreferredSize(new Dimension(115, 30)); // Set preferred size
         addButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) 
+            {
+                // Check if any of the text fields are empty
+                if(firstName.getText().isEmpty() || lastName.getText().isEmpty() || phone.getText().isEmpty() || id.getText().isEmpty()) 
+                {
+                    errorPopup();
+                    return;
+                }
+
                 // Save the text entered in the text fields
                 String firstNameText = firstName.getText();
                 String lastNameText = lastName.getText();
                 String phoneNumber = phone.getText();
                 String studentID = id.getText();
+                // Convert student id to an integer
+                int studentIDInt = Integer.parseInt(studentID);
                 // Call the addUser method in the User class to add the user to the database
                 // Try catch block for the addUser method
                 try {
-                    User.addUser(firstNameText +" "+ lastNameText, phoneNumber, studentID);
+                    User user = new User();
+                    user.addUser(firstNameText +" "+ lastNameText, phoneNumber, studentIDInt);
+                    addUserFrame.dispose(); // Close the Add User GUI
                 } catch (Exception exception) {
                     errorPopup();
                     exception.printStackTrace();
@@ -78,27 +92,39 @@ public class AddUser {
         buttonPanel.add(addButton);
         buttonPanel.add(Box.createRigidArea(new Dimension(10, 0))); // Space between buttons
 
+
+        // Add Another Button
         JButton addAnotherButton = new JButton("Add Another");
         addAnotherButton.setPreferredSize(new Dimension(115, 30)); // Set preferred size
         addAnotherButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) 
+            {
+                // Check if any of the text fields are empty
+                if(firstName.getText().isEmpty() || lastName.getText().isEmpty() || phone.getText().isEmpty() || id.getText().isEmpty()) 
+                {
+                    errorPopup();
+                    return;
+                }
+
                 // Save the text entered in the text fields
                 String firstNameText = firstName.getText();
                 String lastNameText = lastName.getText();
                 String phoneNumber = phone.getText();
                 String studentID = id.getText();
+                // Convert student id to an integer
+                int studentIDInt = Integer.parseInt(studentID);
                 // Call the addUser method in the User class to add the user to the database
                 // Try catch block for the addUser method
                 try {
-                    User.addUser(firstNameText +" "+ lastNameText, phoneNumber, studentID);
+                    User user = new User();
+                    user.addUser(firstNameText +" "+ lastNameText, phoneNumber, studentIDInt);
+                    addUserFrame.dispose(); // Close the Add User GUI
+                    openAddUserGUI(parent); // Open another Add User GUI
                 } catch (Exception exception) {
                     errorPopup();
                     exception.printStackTrace();
                 }
-                openAddUserGUI(parent); // Open another Add User GUI
-                // Close the current Add User GUI
-                addUserFrame.dispose();
             }
         });
 
