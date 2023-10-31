@@ -30,6 +30,8 @@ public class CheckInForm {
 
   DefaultTableModel transactionModel;
 
+  Transaction transaction = new Transaction();
+
   CheckInForm(JFrame frame) {
     // Check In Form Window
     dialog = new JDialog(frame);
@@ -52,6 +54,28 @@ public class CheckInForm {
     userID = new JLabel("User ID:");
     searchBar = new JTextField();
     searchBar.setPreferredSize(new Dimension(300, 20));
+
+    // Allows "Enter" key detection to search
+    Action action = new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+
+        if (searchBar.getText().isEmpty()) {
+          JOptionPane.showMessageDialog(null, "Please enter a User ID.", "Error Message",
+              JOptionPane.ERROR_MESSAGE);
+        } else {
+          try {
+            transaction.displayTransactions(transactionModel, Integer.parseInt(searchBar.getText()));
+          } catch (Exception e1) {
+            e1.printStackTrace();
+          }
+        }
+
+      }
+    };
+
+    // Adding the action listener to the search bar
+    searchBar.addActionListener(action);
 
     // Adding Search Panel Components to Search Panel
     searchPanel.add(userID);
@@ -78,7 +102,6 @@ public class CheckInForm {
     tablePanel.add(transactionPane);
 
     // Displaying Transactions Table
-    // Insert try catch here
 
     // Check In Button
     checkIn = new JButton("Check-In");

@@ -10,7 +10,10 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.Properties;
 import java.util.concurrent.Flow;
 
@@ -27,8 +30,8 @@ import org.jdatepicker.*;
 public class CheckOutForm {
   JDialog dialog;
 
-  JLabel ID;
-  JLabel ISBN;
+  JLabel userIDLabel;
+  JLabel bookIDLabel;
   JLabel returnDate;
 
   JPanel leftPanel;
@@ -48,6 +51,7 @@ public class CheckOutForm {
 
   User user = new User();
   Book book = new Book();
+  Transaction transaction = new Transaction();
   DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
 
   CheckOutForm(JFrame frame) {
@@ -81,29 +85,29 @@ public class CheckOutForm {
     leftPanel.add(userInputPanel);
 
     // Text labels
-    ID = new JLabel("User ID:");
-    ISBN = new JLabel("Book ID:");
+    userIDLabel = new JLabel("User ID:");
+    bookIDLabel = new JLabel("Book ID:");
     returnDate = new JLabel("Return Date:");
 
     // Text Fields
     userField = new JTextField();
     bookField = new JTextField();
 
-    // ID JLabel
+    // ISBN JLabel
     m.gridx = 0;
     m.gridy = 0;
     m.weightx = 0;
     m.fill = GridBagConstraints.HORIZONTAL;
     m.insets = new Insets(5, 5, 5, 5);
-    userInputPanel.add(ID, m);
+    userInputPanel.add(bookIDLabel, m);
 
-    // ISBN JLabel
+    // ID JLabel
     m.gridx = 0;
     m.gridy = 1;
     m.weightx = 0;
     m.fill = GridBagConstraints.HORIZONTAL;
     m.insets = new Insets(5, 5, 5, 5);
-    userInputPanel.add(ISBN, m);
+    userInputPanel.add(userIDLabel, m);
 
     // Return Date JLabel
     m.gridx = 0;
@@ -113,21 +117,21 @@ public class CheckOutForm {
     m.insets = new Insets(5, 5, 5, 5);
     userInputPanel.add(returnDate, m);
 
-    // ID # text field
+    // Book ID text field
     m.gridx = 1;
     m.gridy = 0;
     m.weightx = 1;
     m.fill = GridBagConstraints.HORIZONTAL;
     m.insets = new Insets(5, 5, 5, 5);
-    userInputPanel.add(userField, m);
+    userInputPanel.add(bookField, m);
 
-    // ISBN text field
+    // User ID text field
     m.gridx = 1;
     m.gridy = 1;
     m.weightx = 1;
     m.fill = GridBagConstraints.HORIZONTAL;
     m.insets = new Insets(5, 5, 5, 5);
-    userInputPanel.add(bookField, m);
+    userInputPanel.add(userField, m);
 
     // Date Picker
     dateModel = new UtilDateModel();
@@ -262,7 +266,7 @@ public class CheckOutForm {
 
   void getInput() {
     if (userField.getText().isEmpty() || bookField.getText().isEmpty() || dateModel.getValue() == null) {
-      JOptionPane.showMessageDialog(null, "Not All Fields Were Filled Out.", "Invalid TextFields",
+      JOptionPane.showMessageDialog(null, "Not All Fields Were Filled Out.", "Error Message",
           JOptionPane.ERROR_MESSAGE);
     } else {
       int userID = Integer.parseInt(userField.getText());
@@ -272,9 +276,18 @@ public class CheckOutForm {
       // probably an error in the package code
       int month = dateModel.getMonth() + 1;
       int year = dateModel.getYear();
-      String date = year + "-" + month + "-" + day;
+      String newDate = year + "-" + month + "-" + day;
 
-      // insert method here for adding a transaction into the Transaction Table
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+      try {
+        java.util.Date date = sdf.parse(newDate);
+        java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+        transaction.addTransaction(bookID, userID, sqlDate);
+      } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Failed to add, please try again.");
+        e.printStackTrace();
+      }
     }
   }
 
