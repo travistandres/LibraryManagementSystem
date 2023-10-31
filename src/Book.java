@@ -10,6 +10,7 @@ public class Book {
     private final String username = "admin"; // Your MySQL username
     private final String password = "2QH03UdHKY8t9TT4PeSb"; // Your MySQL password
     private Connection connection;
+    Book(){}
     public void deleteBook(int id) throws SQLException{
       try{
         connection = DriverManager.getConnection(url, username, password);

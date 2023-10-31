@@ -72,7 +72,7 @@ public class MainWindow {
         SwingUtilities.invokeLater(new Runnable() {
           @Override
           public void run() {
-            new AddBook(frame);
+            new AddBook();
           }
         });
       }
@@ -91,7 +91,7 @@ public class MainWindow {
         SwingUtilities.invokeLater(new Runnable() {
           @Override
           public void run() {
-            new AddUser(frame);
+            new AddUser();
           }
         });
       }

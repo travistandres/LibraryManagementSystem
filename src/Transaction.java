@@ -37,31 +37,26 @@ public class Transaction {
                 String query = "SELECT book_id, returnDate FROM transactions WHERE user_id = " + user_id;
                 PreparedStatement ps = connection.prepareStatement(query);
                 ResultSet rs = ps.executeQuery(query);
-                while (rs.next()) {
-                    try{
-                        int book_id = rs.getInt("book_id");
-                        String bookQuery = "SELECT isbn, title FROM book where book_id = " + book_id;
-                        PreparedStatement bookStatement = connection.prepareStatement(bookQuery);
-                        ResultSet bookSet = bookStatement.executeQuery(bookQuery);
+                while (rs.next()){
+                    int book_id = rs.getInt("book_id");
+                    String bookQuery = "Select isbn, title From book where book_id = " + book_id;
+                    PreparedStatement bookStatement = connection.prepareStatement(bookQuery);
+                    ResultSet bookSet = bookStatement.executeQuery(bookQuery);
 
+                    while (bookSet.next()) {
                         String isbn = bookSet.getString("isbn");
                         String title = bookSet.getString("title");
                         Date returnDate = rs.getDate("returnDate");
 
                         String[] data = {isbn, title, returnDate.toString()};
                         transactionModel.addRow(data);
-
-                    } catch (SQLException e){
-                        e.printStackTrace();
                     }
-
                 }
             } catch (SQLException e){
                 e.printStackTrace();
             }
-            connection.close();
         } catch (SQLException e){
             e.printStackTrace();
         }
-    }
+    } 
 }

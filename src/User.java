@@ -12,7 +12,7 @@ public class User {
     private final String username = "admin"; // Your MySQL username
     private final String password = "2QH03UdHKY8t9TT4PeSb"; // Your MySQL password
     private Connection connection;
-    
+    User(){}
     public void deleteUser(int id) throws SQLException{
       try{
         connection = DriverManager.getConnection(url, username, password);
