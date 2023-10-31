@@ -15,6 +15,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
+
 public class MainWindow {
   JFrame frame;
   JPanel leftPanel;
@@ -25,8 +26,7 @@ public class MainWindow {
   private JButton checkIn;
   private JButton checkOut;
 
-  private DefaultTableModel bookModel;
-  private DefaultTableModel userModel;
+  private DefaultTableModel model;
 
   private JTextField mainSearch;
 
@@ -41,7 +41,6 @@ public class MainWindow {
 
     // Main Page
     JPanel main = new JPanel(new BorderLayout());
-    main.setBorder(BorderFactory.createEmptyBorder(15, 0, 15, 0));
     frame.add(main);
 
     // Left Panel
@@ -62,12 +61,25 @@ public class MainWindow {
     addBook.setPreferredSize(new Dimension(100, 50));
     addBook.setAlignmentX(Component.CENTER_ALIGNMENT);
     addBook.setMaximumSize(new Dimension(100, addBook.getMinimumSize().height));
+    // Add action listener to button that opens the AddUser window, code for AddUser is contained in the AddUser.java file
+    addBook.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        AddBook.openBookGUI(frame);
+      }
+    });
 
     // Add User Button
     addUser = new JButton("Add User");
     addUser.setPreferredSize(new Dimension(100, 50));
     addUser.setAlignmentX(Component.CENTER_ALIGNMENT);
     addUser.setMaximumSize(new Dimension(100, addUser.getMinimumSize().height));
+    // Add action listener to button that opens the AddUser window, code for AddUser is contained in the AddUser.java file
+    addUser.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        AddUser.openAddUserGUI(frame);
+      }
+    });
+
 
     // Check-Out Button
     checkOut = new JButton("Check-Out");
@@ -94,20 +106,6 @@ public class MainWindow {
     checkIn.setPreferredSize(new Dimension(100, 50));
     checkIn.setAlignmentX(Component.CENTER_ALIGNMENT);
     checkIn.setMaximumSize(new Dimension(100, checkIn.getMinimumSize().height));
-
-    // Action Listener for Check-In Button
-    // Pops up the Check Out Form
-    checkIn.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            new CheckInForm(frame);
-          }
-        });
-      }
-    });
 
     // Adding Buttons to the Left Panel
     // Box.createRigidArea is just for padding (spacing) between the buttons
@@ -147,53 +145,19 @@ public class MainWindow {
 
     // Creating Book Table
     JTable bookTable = new JTable(new DefaultTableModel(null, columnNames));
-    bookModel = (DefaultTableModel) bookTable.getModel();
-    bookTable.getTableHeader().setReorderingAllowed(false);
-    bookTable.setDefaultEditor(Object.class, null);
-
+    model = (DefaultTableModel) bookTable.getModel();
     // Adding Book Table to the Scroll Pane
     JScrollPane bookPane = new JScrollPane(bookTable);
-
-    // Centering Text on each cell on Book Table
-    DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-    centerRenderer.setHorizontalAlignment(JLabel.CENTER);
-    for (int i = 0; i < columnNames.length; i++) {
-      bookTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
-    }
-
-    // Adding data to Book Table DW 10/25/2023
-    Book book = new Book();
-    try {
-      book.displayBooks(bookModel);
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
+    bookTable.getTableHeader().setReorderingAllowed(false);
 
     // User Table Column Names
     String[] columnNames1 = { "User ID", "Name", "Phone Number" };
-
     // Creating User Table
     JTable userTable = new JTable(new DefaultTableModel(null, columnNames1));
-    userModel = (DefaultTableModel) userTable.getModel();
-    userTable.getTableHeader().setReorderingAllowed(false);
-    userTable.setDefaultEditor(Object.class, null);
-
+    model = (DefaultTableModel) userTable.getModel();
     // Adding User Table to the Scroll Pane
     JScrollPane userPane = new JScrollPane(userTable);
-
-    // Centering Text on each cell on User Table
-    centerRenderer.setHorizontalAlignment(JLabel.CENTER);
-    for (int i = 0; i < columnNames1.length; i++) {
-      userTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
-    }
-
-    // Adding data to User Table
-    User user = new User();
-    try {
-      user.displayUsers(userModel);
-    } catch (SQLException e1) {
-      e1.printStackTrace();
-    }
+    userTable.getTableHeader().setReorderingAllowed(false);
 
     // Adding Tables to Tabs then to the TABLE Frame
     JTabbedPane tablePane = new JTabbedPane();
