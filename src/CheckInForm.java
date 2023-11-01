@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 public class CheckInForm {
@@ -48,12 +49,15 @@ public class CheckInForm {
     Action action = new AbstractAction() {
       @Override
       public void actionPerformed(ActionEvent e) {
+        // resets the table after pressing the "Enter" key
+        transactionModel.setRowCount(0);
 
         if (searchBar.getText().isEmpty()) {
           JOptionPane.showMessageDialog(null, "Please enter a User ID.", "Error Message",
               JOptionPane.ERROR_MESSAGE);
         } else {
           try {
+            // Displaying Transactions Table
             transaction.displayTransactionsForUser(transactionModel, Integer.parseInt(searchBar.getText()));
           } catch (Exception e1) {
             e1.printStackTrace();
@@ -82,6 +86,15 @@ public class CheckInForm {
     transactionModel = (DefaultTableModel) transactionTable.getModel();
     transactionTable.getTableHeader().setReorderingAllowed(false);
     transactionTable.setDefaultEditor(Object.class, null);
+    // only one row can be highlighted
+    transactionTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+    // Centering text on each cell
+    DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+    centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+    for (int i = 0; i < columnNames.length; i++) {
+      transactionTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+    }
 
     // Adding Transaction Table to the Scroll Pane
     JScrollPane transactionPane = new JScrollPane(transactionTable);
@@ -89,8 +102,6 @@ public class CheckInForm {
 
     // Adding Transaction Pane to Table Panel
     tablePanel.add(transactionPane);
-
-    // Displaying Transactions Table
 
     // Check In Button
     checkIn = new JButton("Check-In");
@@ -102,7 +113,21 @@ public class CheckInForm {
     checkIn.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        // Insert Method here
+        int selectedRow = transactionTable.getSelectedRow();
+        System.out.println(selectedRow);
+        if (transactionTable.getSelectionModel().isSelectionEmpty()) {
+          JOptionPane.showMessageDialog(null, "Nothing is selected!", "Error Message",
+              JOptionPane.ERROR_MESSAGE);
+        } else {
+          try {
+            // INSERT Check In/removeTransaction method here
+            JOptionPane.showMessageDialog(null, "Checked-In Successfully.");
+            // removes the row that they checked in
+            transactionModel.removeRow(selectedRow);
+          } catch (Exception e1) {
+            e1.printStackTrace();
+          }
+        }
       }
     });
 

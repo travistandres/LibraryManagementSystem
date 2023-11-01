@@ -202,6 +202,8 @@ public class CheckOutForm {
     bookModel = (DefaultTableModel) bookTable.getModel();
     bookTable.getTableHeader().setReorderingAllowed(false);
     bookTable.setDefaultEditor(Object.class, null);
+    // can only highlight one row at a time
+    bookTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
     // Adding Book Table to the Scroll Pane
     JScrollPane bookPane = new JScrollPane(bookTable);
@@ -227,6 +229,8 @@ public class CheckOutForm {
     userModel = (DefaultTableModel) userTable.getModel();
     userTable.getTableHeader().setReorderingAllowed(false);
     userTable.setDefaultEditor(Object.class, null);
+    // can only highlight one row at a time
+    userTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
     // Adding User Table to the Scroll Pane
     JScrollPane userPane = new JScrollPane(userTable);
@@ -274,6 +278,7 @@ public class CheckOutForm {
         java.util.Date date = sdf.parse(newDate);
         java.sql.Date sqlDate = new java.sql.Date(date.getTime());
         transaction.addTransaction(bookID, userID, sqlDate);
+        JOptionPane.showMessageDialog(null, "Checked-Out Successfully.");
       } catch (Exception e) {
         JOptionPane.showMessageDialog(null, "Failed to add, please try again.");
         e.printStackTrace();

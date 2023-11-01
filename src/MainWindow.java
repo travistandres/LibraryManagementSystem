@@ -183,8 +183,11 @@ public class MainWindow {
     // Creating Book Table
     bookTable = new JTable(new DefaultTableModel(null, columnNames));
     bookModel = (DefaultTableModel) bookTable.getModel();
+    // column header is not draggable
     bookTable.getTableHeader().setReorderingAllowed(false);
     bookTable.setDefaultEditor(Object.class, null);
+    // can only highlight one row at a time
+    bookTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
     // Adding Book Table to the Scroll Pane
     JScrollPane bookPane = new JScrollPane(bookTable);
@@ -210,8 +213,11 @@ public class MainWindow {
     // Creating User Table
     userTable = new JTable(new DefaultTableModel(null, columnNames1));
     userModel = (DefaultTableModel) userTable.getModel();
+    // column headers is not draggable
     userTable.getTableHeader().setReorderingAllowed(false);
     userTable.setDefaultEditor(Object.class, null);
+    // can only highlight one row at a time
+    userTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
     // Adding User Table to the Scroll Pane
     JScrollPane userPane = new JScrollPane(userTable);
