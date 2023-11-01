@@ -75,8 +75,8 @@ public class Book {
   }
 }
 enum Available{
-    OUT(0), 
-    IN(1);
+    UNAVAILABLE(0), 
+    AVAILABLE(1);
 
     int value;
 
