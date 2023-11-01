@@ -2,10 +2,12 @@
 // Travis Tan
 // 10-23-23
 import java.awt.*;
+import java.awt.event.AWTEventListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.MouseAdapter;
 import java.sql.SQLException;
 
 import javax.swing.*;
@@ -16,6 +18,8 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+
+import org.w3c.dom.events.MouseEvent;
 
 public class MainWindow {
   JFrame frame;
@@ -31,6 +35,9 @@ public class MainWindow {
   private DefaultTableModel userModel;
 
   private JTextField mainSearch;
+
+  JTable userTable;
+  JTable bookTable;
 
   MainWindow() {
     // Main Window
@@ -72,7 +79,7 @@ public class MainWindow {
         SwingUtilities.invokeLater(new Runnable() {
           @Override
           public void run() {
-            new AddBook();
+            new AddBook(frame);
           }
         });
       }
@@ -91,7 +98,7 @@ public class MainWindow {
         SwingUtilities.invokeLater(new Runnable() {
           @Override
           public void run() {
-            new AddUser();
+            new AddUser(frame);
           }
         });
       }
@@ -174,7 +181,7 @@ public class MainWindow {
     String[] columnNames = { "Book ID", "Title", "Author", "Genre", "ISBN" };
 
     // Creating Book Table
-    JTable bookTable = new JTable(new DefaultTableModel(null, columnNames));
+    bookTable = new JTable(new DefaultTableModel(null, columnNames));
     bookModel = (DefaultTableModel) bookTable.getModel();
     bookTable.getTableHeader().setReorderingAllowed(false);
     bookTable.setDefaultEditor(Object.class, null);
@@ -201,7 +208,7 @@ public class MainWindow {
     String[] columnNames1 = { "User ID", "Name", "Phone Number" };
 
     // Creating User Table
-    JTable userTable = new JTable(new DefaultTableModel(null, columnNames1));
+    userTable = new JTable(new DefaultTableModel(null, columnNames1));
     userModel = (DefaultTableModel) userTable.getModel();
     userTable.getTableHeader().setReorderingAllowed(false);
     userTable.setDefaultEditor(Object.class, null);
@@ -238,19 +245,77 @@ public class MainWindow {
     // Creating the Edit and Remove buttons
     JButton edit = new JButton("Edit");
     edit.setEnabled(false);
+    JButton remove = new JButton("Remove");
+    remove.setEnabled(false);
 
-    if (!userTable.getSelectionModel().isSelectionEmpty() || !bookTable.getSelectionModel().isSelectionEmpty()) {
-      edit.setEnabled(false);
-    }
+    // Action Listener for Edit button
+    edit.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        // if User Table is in focus, pops up an edit form for users
+        int userTableFocus = userTable.getSelectedRow();
+        if (userTableFocus >= 0) {
+          JOptionPane.showMessageDialog(null, "EDIT User", "Error Message", JOptionPane.ERROR_MESSAGE);
+          // Clears focus of the User Table
+          userTable.clearSelection();
+        }
 
-    bookTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-      public void valueChanged(ListSelectionEvent event) {
-        edit.setEnabled(true);
+        // if Book Table is in focus, pops up an edit form for books
+        int bookTableFocus = bookTable.getSelectedRow();
+        if (bookTableFocus >= 0) {
+          JOptionPane.showMessageDialog(null, "EDIT Book", "Error Message", JOptionPane.ERROR_MESSAGE);
+          bookTable.clearSelection();
+        }
       }
     });
 
-    JButton remove = new JButton("Remove");
-    remove.setEnabled(false);
+    // Enabling Buttons and Clearing Focus on the User Table
+    userTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+      public void valueChanged(ListSelectionEvent event) {
+
+        // enables the Edit and Remove button if a row is selected in the User Table
+        edit.setEnabled(true);
+        remove.setEnabled(true);
+
+        // disables the Edit and Remove buttons when it loses focus
+        if (userTable.getSelectionModel().isSelectionEmpty()) {
+          edit.setEnabled(false);
+          remove.setEnabled(false);
+        }
+
+        // clears the focus on the Book Table when they select a row from the User Table
+        if (!userTable.getSelectionModel().isSelectionEmpty()) {
+          bookTable.clearSelection();
+        }
+      }
+    });
+
+    // Enabling Buttons and Clearing Focus on the Book Table
+    bookTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+      public void valueChanged(ListSelectionEvent event) {
+        // enables the Edit and Remove button if a row is selected in the Book Table
+        edit.setEnabled(true);
+        remove.setEnabled(true);
+
+        // disables the Edit and Remove buttons when it loses focus
+        if (bookTable.getSelectionModel().isSelectionEmpty()) {
+          edit.setEnabled(false);
+          remove.setEnabled(false);
+        }
+
+        // clears the focus on the User Table when they select a row from the Book Table
+        if (!bookTable.getSelectionModel().isSelectionEmpty()) {
+          userTable.clearSelection();
+        }
+      }
+    });
+
+    leftPanel.requestFocus();
+    leftPanel.addMouseListener(new MouseAdapter() {
+      public void mouseClicked(MouseEvent e) {
+        System.out.println("Clicked!");
+      }
+    });
 
     // Adding and placing the buttons
     bottomRight.add(Box.createRigidArea(new Dimension(552, 0)));
