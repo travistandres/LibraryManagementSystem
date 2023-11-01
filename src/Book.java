@@ -50,7 +50,7 @@ public class Book {
     public void displayBooks(DefaultTableModel bookModel) throws SQLException{
     try {
       connection = DriverManager.getConnection(url, username, password);
-      String query = "SELECT book_id, title, author, isbn FROM book";
+      String query = "SELECT book_id, title, author, isbn, genre FROM book";
       try {
         PreparedStatement ps = connection.prepareStatement(query);
         ResultSet rs = ps.executeQuery(query);
@@ -60,8 +60,9 @@ public class Book {
           String title = rs.getString("title");
           String author = rs.getString("author");
           String isbn = rs.getString("isbn");
+          String genre = rs.getString("genre");
 
-          String[] data = { id, title, author, null ,isbn};
+          String[] data = { id, title, author, genre ,isbn};
 
           bookModel.addRow(data);
         }
