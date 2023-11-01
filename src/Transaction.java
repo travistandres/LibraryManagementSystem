@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class Transaction {
@@ -30,14 +31,14 @@ public class Transaction {
             e.printStackTrace();
         }
     }
-    public void displayTransactions(DefaultTableModel transactionModel, int user_id){
+    public void displayTransactionsForUser(DefaultTableModel transactionModel, int user_id){
         try{
             connection = DriverManager.getConnection(url, username, password);
             try{
                 String query = "SELECT book_id, returnDate FROM transactions WHERE user_id = " + user_id;
                 PreparedStatement ps = connection.prepareStatement(query);
                 ResultSet rs = ps.executeQuery(query);
-                while (rs.next()){
+                if (rs.next()){
                     int book_id = rs.getInt("book_id");
                     String bookQuery = "Select isbn, title From book where book_id = " + book_id;
                     PreparedStatement bookStatement = connection.prepareStatement(bookQuery);
@@ -51,6 +52,8 @@ public class Transaction {
                         String[] data = {isbn, title, returnDate.toString()};
                         transactionModel.addRow(data);
                     }
+                } else {
+                    JOptionPane.showMessageDialog(null, "User ID not found!", "Error Message", JOptionPane.ERROR_MESSAGE);
                 }
             } catch (SQLException e){
                 e.printStackTrace();
@@ -59,4 +62,9 @@ public class Transaction {
             e.printStackTrace();
         }
     } 
+}
+
+enum Available{
+    OUT,
+    IN
 }

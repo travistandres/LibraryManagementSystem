@@ -9,6 +9,7 @@ public class Book {
     private final String url = "jdbc:mysql://librarydatabase.cupwod9sczsb.us-east-2.rds.amazonaws.com:3306/LibraryManagementSystem";
     private final String username = "admin"; // Your MySQL username
     private final String password = "2QH03UdHKY8t9TT4PeSb"; // Your MySQL password
+    
     private Connection connection;
     Book(){}
     public void deleteBook(int id) throws SQLException{

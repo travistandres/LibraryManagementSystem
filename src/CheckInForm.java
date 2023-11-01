@@ -4,18 +4,7 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Properties;
-import java.util.concurrent.Flow;
-
 import javax.swing.*;
-import javax.swing.JFormattedTextField.AbstractFormatter;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 public class CheckInForm {
@@ -65,7 +54,7 @@ public class CheckInForm {
               JOptionPane.ERROR_MESSAGE);
         } else {
           try {
-            transaction.displayTransactions(transactionModel, Integer.parseInt(searchBar.getText()));
+            transaction.displayTransactionsForUser(transactionModel, Integer.parseInt(searchBar.getText()));
           } catch (Exception e1) {
             e1.printStackTrace();
           }
