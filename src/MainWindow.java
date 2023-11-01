@@ -310,13 +310,6 @@ public class MainWindow {
       }
     });
 
-    leftPanel.requestFocus();
-    leftPanel.addMouseListener(new MouseAdapter() {
-      public void mouseClicked(MouseEvent e) {
-        System.out.println("Clicked!");
-      }
-    });
-
     // Adding and placing the buttons
     bottomRight.add(Box.createRigidArea(new Dimension(552, 0)));
     bottomRight.add(edit);
