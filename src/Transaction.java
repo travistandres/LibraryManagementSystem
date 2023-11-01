@@ -63,8 +63,3 @@ public class Transaction {
         }
     } 
 }
-
-enum Available{
-    OUT,
-    IN
-}

@@ -74,3 +74,13 @@ public class Book {
     }
   }
 }
+enum Available{
+    OUT(0), 
+    IN(1);
+
+    int value;
+
+    Available(int value){
+        this.value = value;
+    }
+}
