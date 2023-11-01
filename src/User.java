@@ -29,15 +29,14 @@ public class User {
         e.printStackTrace();
       }
     }
-    public void addUser(String name, String phoneNumber, int id) throws SQLException{
+    public void addUser(String name, String phoneNumber) throws SQLException{
         try{
             connection = DriverManager.getConnection(url, username, password);
             try{
-              String sql = "INSERT INTO user (user_id, fullName, phoneNumber)" + "VALUES (?, ?, ?)";
+              String sql = "INSERT INTO user (fullName, phoneNumber)" + "VALUES (?, ?)";
               PreparedStatement ps = connection.prepareStatement(sql);
-              ps.setInt(1, id);
-              ps.setString(2, name);
-              ps.setString(3, phoneNumber);
+              ps.setString(1, name);
+              ps.setString(2, phoneNumber);
               ps.executeUpdate();
               connection.close();
             } catch (Exception e) {

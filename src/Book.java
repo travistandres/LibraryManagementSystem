@@ -28,16 +28,15 @@ public class Book {
         e.printStackTrace();
       }
     }
-    public void addBook(String title, String author, int id, String isbn) throws SQLException{
+    public void addBook(String title, String author, String isbn) throws SQLException{
         try{
             connection = DriverManager.getConnection(url, username, password);
             try{
-              String sql = "INSERT INTO book (book_id, title, author, isbn)" + "VALUES (?, ?, ?, ?)";
+              String sql = "INSERT INTO book (title, author, isbn)" + "VALUES (?, ?, ?)";
               PreparedStatement ps = connection.prepareStatement(sql);
-              ps.setInt(1, id);
-              ps.setString(2, title);
-              ps.setString(3, author);
-              ps.setString(4, isbn);
+              ps.setString(1, title);
+              ps.setString(2, author);
+              ps.setString(3, isbn);
               ps.executeUpdate();
               connection.close();
             } catch (Exception e) {
