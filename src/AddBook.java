@@ -42,6 +42,9 @@ public class AddBook {
         JTextField isbn = new JTextField();
         JLabel authorLabel = new JLabel("Author:");
         JTextField author = new JTextField();
+        JLabel genreLabel = new JLabel("Genre:");
+        String[] genreStrings = { "Fiction", "NonFiction", "Mystery", "Young Adult", "Science Fiction", "Fantasy", "Horror", "Romance", "Historical Fiction", "Other" };
+        JComboBox genreList = new JComboBox(genreStrings);
 
 
         textFieldPanel.add(titleLabel);
@@ -50,6 +53,8 @@ public class AddBook {
         textFieldPanel.add(isbn);
         textFieldPanel.add(authorLabel);
         textFieldPanel.add(author);
+        textFieldPanel.add(genreLabel);
+        textFieldPanel.add(genreList);
 
         // Create a panel for the Add and Add Another buttons with padding
         JPanel buttonPanel = new JPanel();
