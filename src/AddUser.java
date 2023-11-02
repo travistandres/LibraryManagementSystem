@@ -6,6 +6,13 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import java.sql.Connection;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 public class AddUser {
     public static void openAddUserGUI(JFrame parent) {
         // Create the main JFrame for the Add User GUI
@@ -45,8 +52,6 @@ public class AddUser {
         textFieldPanel.add(lastName);
         textFieldPanel.add(phoneLabel);
         textFieldPanel.add(phone);
-        textFieldPanel.add(idLabel);
-        textFieldPanel.add(id);
 
         // Create a panel for the Add and Add Another buttons with padding
         JPanel buttonPanel = new JPanel();
@@ -62,24 +67,42 @@ public class AddUser {
             public void actionPerformed(ActionEvent e) 
             {
                 // Check if any of the text fields are empty
-                if(firstName.getText().isEmpty() || lastName.getText().isEmpty() || phone.getText().isEmpty() || id.getText().isEmpty()) 
+                if(firstName.getText().isEmpty())
                 {
-                    errorPopup();
+                    JOptionPane.showMessageDialog(null, "Please enter a first name.", "Error Message",
+                    JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if(lastName.getText().isEmpty())
+                {
+                    JOptionPane.showMessageDialog(null, "Please enter a last name.", "Error Message",
+                    JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if(phone.getText().isEmpty())
+                {
+                    JOptionPane.showMessageDialog(null, "Please enter a phone number.", "Error Message",
+                    JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
                 // Save the text entered in the text fields
-                String firstNameText = firstName.getText();
-                String lastNameText = lastName.getText();
+                String fullName = firstName.getText() + " " + lastName.getText();
                 String phoneNumber = phone.getText();
-                String studentID = id.getText();
-                // Convert student id to an integer
-                int studentIDInt = Integer.parseInt(studentID);
+
+                // Check if the user already exists
+                if(verifyUser(fullName))
+                {
+                    JOptionPane.showMessageDialog(null, "User already exists.", "Error Message",
+                    JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
                 // Call the addUser method in the User class to add the user to the database
                 // Try catch block for the addUser method
                 try {
                     User user = new User();
-                    user.addUser(firstNameText +" "+ lastNameText, phoneNumber, studentIDInt);
+                    user.addUser(fullName, phoneNumber);
                     addUserFrame.dispose(); // Close the Add User GUI
                 } catch (Exception exception) {
                     errorPopup();
@@ -100,25 +123,42 @@ public class AddUser {
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                // Check if any of the text fields are empty
-                if(firstName.getText().isEmpty() || lastName.getText().isEmpty() || phone.getText().isEmpty() || id.getText().isEmpty()) 
+                if(firstName.getText().isEmpty())
                 {
-                    errorPopup();
+                    JOptionPane.showMessageDialog(null, "Please enter a first name.", "Error Message",
+                    JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if(lastName.getText().isEmpty())
+                {
+                    JOptionPane.showMessageDialog(null, "Please enter a last name.", "Error Message",
+                    JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if(phone.getText().isEmpty())
+                {
+                    JOptionPane.showMessageDialog(null, "Please enter a phone number.", "Error Message",
+                    JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
                 // Save the text entered in the text fields
-                String firstNameText = firstName.getText();
-                String lastNameText = lastName.getText();
+                String fullName = firstName.getText() + " " + lastName.getText();
                 String phoneNumber = phone.getText();
-                String studentID = id.getText();
-                // Convert student id to an integer
-                int studentIDInt = Integer.parseInt(studentID);
+
+                // Check if the user already exists
+                if(verifyUser(fullName))
+                {
+                    JOptionPane.showMessageDialog(null, "User already exists.", "Error Message",
+                    JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                
                 // Call the addUser method in the User class to add the user to the database
                 // Try catch block for the addUser method
                 try {
                     User user = new User();
-                    user.addUser(firstNameText +" "+ lastNameText, phoneNumber, studentIDInt);
+                    user.addUser(fullName, phoneNumber);
                     addUserFrame.dispose(); // Close the Add User GUI
                     openAddUserGUI(parent); // Open another Add User GUI
                 } catch (Exception exception) {
@@ -184,4 +224,46 @@ public class AddUser {
         errorFrame.setVisible(true);
     }
 
+    // Method to verify if the user is a duplicate
+    public static boolean verifyUser(String name) 
+    {
+        final String url = "jdbc:mysql://librarydatabase.cupwod9sczsb.us-east-2.rds.amazonaws.com:3306/LibraryManagementSystem";
+        final String username = "admin"; // Your MySQL username
+        final String password = "2QH03UdHKY8t9TT4PeSb"; // Your MySQL password
+
+        String query = "SELECT fullName FROM user WHERE fullName = ?";
+
+        try {
+            // Establish a database connection
+            Connection connection = DriverManager.getConnection(url, username, password);
+
+            // Create a PreparedStatement with the SQL query
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, name);
+
+            // Execute the query
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            // Check if there are results
+            if (resultSet.next()) // Value in the database matches the string
+            {
+                // Close resources
+                resultSet.close();
+                preparedStatement.close();
+                connection.close();
+                return true;
+            } 
+            else  // No match found
+            {
+                // Close resources
+                resultSet.close();
+                preparedStatement.close();
+                connection.close();
+                return false;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
 }

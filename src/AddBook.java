@@ -6,6 +6,13 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import java.sql.Connection;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 public class AddBook {
     public static void openBookGUI(JFrame parent) {
         // Create the main JFrame for the Add Book GUI
@@ -31,8 +38,6 @@ public class AddBook {
 
         JLabel titleLabel = new JLabel("Title:");
         JTextField title = new JTextField();
-        JLabel genreLabel = new JLabel("Genre:");
-        JTextField genre = new JTextField();
         JLabel isbnLabel = new JLabel("ISBN:");
         JTextField isbn = new JTextField();
         JLabel authorLabel = new JLabel("Author:");
@@ -41,8 +46,6 @@ public class AddBook {
 
         textFieldPanel.add(titleLabel);
         textFieldPanel.add(title);
-        textFieldPanel.add(genreLabel);
-        textFieldPanel.add(genre);
         textFieldPanel.add(isbnLabel);
         textFieldPanel.add(isbn);
         textFieldPanel.add(authorLabel);
@@ -61,26 +64,41 @@ public class AddBook {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Check if any of the text fields are empty
-                if(title.getText().isEmpty() || genre.getText().isEmpty() || isbn.getText().isEmpty() || author.getText().isEmpty()) 
+                if(title.getText().isEmpty())
                 {
-                    errorPopup();
+                    JOptionPane.showMessageDialog(null, "Please enter a title.", "Error Message",
+                    JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if(isbn.getText().isEmpty())
+                {
+                    JOptionPane.showMessageDialog(null, "Please enter an ISBN.", "Error Message",
+                    JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if(author.getText().isEmpty())
+                {
+                    JOptionPane.showMessageDialog(null, "Please enter an author.", "Error Message",
+                    JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
-                // Check if the ISBN is a duplicate
-                // todo
+                if(verifyISBN(isbn.getText()))
+                {
+                    JOptionPane.showMessageDialog(null, "ISBN already exists.", "Error Message",
+                    JOptionPane.ERROR_MESSAGE);
+                    return;
+                }                                                                                                  
 
                 // Save the text entered in the text fields
                 String titleText = title.getText();
-                String genreText = genre.getText();
                 String isbnString = isbn.getText();
-                int isbnNumber = Integer.parseInt(isbn.getText());
                 String authorText = author.getText();
                 // Try catch block for the addBook method
                 try 
                 {
                     Book book = new Book();
-                    book.addBook(titleText, authorText, isbnNumber, isbnString); // Call the addBook method in the Book class to add the book to the database
+                    book.addBook(titleText, authorText, isbnString); // Call the addBook method in the Book class to add the book to the database
                     addBookFrame.dispose(); // Close the Add Book GUI
                 } catch (Exception exception) {
                     errorPopup();
@@ -102,28 +120,44 @@ public class AddBook {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Check if any of the text fields are empty
-                if(title.getText().isEmpty() || genre.getText().isEmpty() || isbn.getText().isEmpty() || author.getText().isEmpty()) 
+                if(title.getText().isEmpty())
                 {
-                    errorPopup();
+                    JOptionPane.showMessageDialog(null, "Please enter a title.", "Error Message",
+                    JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if(isbn.getText().isEmpty())
+                {
+                    JOptionPane.showMessageDialog(null, "Please enter an ISBN.", "Error Message",
+                    JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if(author.getText().isEmpty())
+                {
+                    JOptionPane.showMessageDialog(null, "Please enter an author.", "Error Message",
+                    JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
 
                 // Check if the ISBN is a duplicate
-                // todo
+                if(verifyISBN(isbn.getText()))
+                {
+                    JOptionPane.showMessageDialog(null, "ISBN already exists.", "Error Message",
+                    JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
 
                 // Save the text entered in the text fields
                 String titleText = title.getText();
-                String genreText = genre.getText();
                 String isbnString = isbn.getText();
-                int isbnNumber = Integer.parseInt(isbn.getText());
                 String authorText = author.getText();
                 // Call the addBook method in the Book class to add the book to the database
                 // Try catch block for the addBook method
                 try 
                 {
                     Book book = new Book();
-                    book.addBook(titleText, authorText, isbnNumber, isbnString); // Call the addBook method in the Book class to add the book to the database
+                    book.addBook(titleText, authorText, isbnString); // Call the addBook method in the Book class to add the book to the database
                     openBookGUI(parent); // Open another Add Book GUI
                     addBookFrame.dispose(); // Close the Add Book GUI
                 } catch (Exception exception) {
@@ -176,7 +210,8 @@ public class AddBook {
 
 
     // Method to display an error popup
-    public static void errorPopup() {
+    public static void errorPopup() 
+    {
         JFrame errorFrame = new JFrame("Error");
         errorFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         errorFrame.setSize(300, 150);
@@ -191,5 +226,48 @@ public class AddBook {
         errorPanel.add(errorLabel);
 
         errorFrame.setVisible(true);
+    }
+
+    // Method to verify if the ISBN is a duplicate
+    public static boolean verifyISBN(String isbn) 
+    {
+        final String url = "jdbc:mysql://librarydatabase.cupwod9sczsb.us-east-2.rds.amazonaws.com:3306/LibraryManagementSystem";
+        final String username = "admin"; // Your MySQL username
+        final String password = "2QH03UdHKY8t9TT4PeSb"; // Your MySQL password
+
+        String query = "SELECT isbn FROM book WHERE isbn = ?";
+
+        try {
+            // Establish a database connection
+            Connection connection = DriverManager.getConnection(url, username, password);
+
+            // Create a PreparedStatement with the SQL query
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, isbn);
+
+            // Execute the query
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            // Check if there are results
+            if (resultSet.next()) // Value in the database matches the string
+            {
+                // Close resources
+                resultSet.close();
+                preparedStatement.close();
+                connection.close();
+                return true;
+            } 
+            else  // No match found
+            {
+                // Close resources
+                resultSet.close();
+                preparedStatement.close();
+                connection.close();
+                return false;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return true;
     }
 }
