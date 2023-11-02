@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
@@ -15,6 +16,8 @@ import java.sql.SQLException;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -27,6 +30,10 @@ public class MainWindow {
   JFrame frame;
   JPanel leftPanel;
   JPanel rightPanel;
+
+  private int focusedPane = 0; //1 will represent the userPane, 0 will represent the bookPane (if a third tab is added this will no longer work)
+  private String bookSearch = ""; //Holds the text in the search bar so when searching the textarea will be different depending on which table is being searched
+  private String userSearch = "";
 
   private JButton addBook;
   private JButton addUser;
@@ -173,8 +180,9 @@ public class MainWindow {
         source.removeFocusListener(this);
       }
     });
-    // Adding funtion to Search Bar DW 11/2/2023
+    //#region Adding funtion to Search Bar DW 11/2/2023
     Searching search = new Searching();
+
     KeyListener keylistener = new KeyListener(){
       public void keyPressed(KeyEvent keyEvent) {
       }
@@ -183,10 +191,15 @@ public class MainWindow {
       }
       @Override
       public void keyReleased(KeyEvent e) {
-        search.search(mainSearch.getText(), bookModel, bookTable);
+        if (focusedPane != 1){
+          search.search(mainSearch.getText(), bookModel, bookTable);
+        } else {
+          search.search(mainSearch.getText(), userModel, userTable);
+        }
       }
     };
     mainSearch.addKeyListener(keylistener);
+    //#endregion
     
     // Adding Search Bar to TABLE pane
     TABLE.add(Box.createRigidArea(new Dimension(0, 30)));
@@ -258,6 +271,22 @@ public class MainWindow {
     tablePane.add("Users", userPane);
     tablePane.setPreferredSize(new Dimension(700, 470));
     TABLE.add(tablePane);
+
+    // Add listener to know which pane has focus
+    tablePane.addChangeListener(new ChangeListener() {
+      @Override
+      public void stateChanged(ChangeEvent e) {
+        if (focusedPane == 0){
+          bookSearch = mainSearch.getText();
+          mainSearch.setText(userSearch);
+          focusedPane = 1;
+        } else {
+          userSearch = mainSearch.getText();
+          mainSearch.setText(bookSearch);
+          focusedPane = 0;
+        }
+      }
+    });
 
     // Panel for containing the Edit and Remove buttons
     JPanel bottomRight = new JPanel();
