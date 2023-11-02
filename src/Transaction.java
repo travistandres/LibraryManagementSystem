@@ -31,16 +31,16 @@ public class Transaction {
             e.printStackTrace();
         }
     }
-    public void displayTransactionsForUser(DefaultTableModel transactionModel, int user_id){
+    public void displayTransactionsForUser(DefaultTableModel transactionModel, int userID){
         try{
             connection = DriverManager.getConnection(url, username, password);
             try{
-                String query = "SELECT book_id, returnDate, transaction_id FROM transactions WHERE user_id = " + user_id;
+                String query = "SELECT book_id, returnDate, transaction_id FROM transactions WHERE user_id = " + userID;
                 PreparedStatement ps = connection.prepareStatement(query);
                 ResultSet rs = ps.executeQuery(query);
                 if (rs.next()){
-                    int book_id = rs.getInt("book_id");
-                    String bookQuery = "Select isbn, title From book where book_id = " + book_id;
+                    int bookID = rs.getInt("book_id");
+                    String bookQuery = "Select isbn, title From book where book_id = " + bookID;
                     PreparedStatement bookStatement = connection.prepareStatement(bookQuery);
                     ResultSet bookSet = bookStatement.executeQuery(bookQuery);
 
@@ -63,4 +63,19 @@ public class Transaction {
             e.printStackTrace();
         }
     } 
+    public void deleteTransaction(int transactionID){
+        try{
+            connection = DriverManager.getConnection(url, username, password);
+            try{
+              String sql = "DELETE FROM transactions WHERE transaction_id = " + transactionID;
+              PreparedStatement ps = connection.prepareStatement(sql);
+              ps.executeUpdate();
+              connection.close();
+            } catch (Exception e){
+              e.printStackTrace();
+            }
+          } catch (Exception e){
+            e.printStackTrace();
+          }
+    }
 }
