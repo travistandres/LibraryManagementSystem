@@ -13,15 +13,15 @@ public class Transaction {
     private final String username = "admin"; // Your MySQL username
     private final String password = "2QH03UdHKY8t9TT4PeSb"; // Your MySQL password
     private Connection connection;
-    public void addTransaction(int book_id, int user_id, Date returnDate) throws SQLException{
+    public void addTransaction(int bookID, int userID, Date returnDate) throws SQLException{
         try {
             connection = DriverManager.getConnection(url, username, password);
             try{
                 String sql = "INSERT INTO transactions (returnDate, user_id, book_id)" + "VALUES (?, ?, ?)";
                 PreparedStatement ps = connection.prepareStatement(sql);
                 ps.setDate(1, returnDate);
-                ps.setInt(2, user_id);
-                ps.setInt(3, book_id);
+                ps.setInt(2, userID);
+                ps.setInt(3, bookID);
                 ps.executeUpdate();
                 connection.close();
             } catch (SQLException e){
@@ -35,7 +35,7 @@ public class Transaction {
         try{
             connection = DriverManager.getConnection(url, username, password);
             try{
-                String query = "SELECT book_id, returnDate FROM transactions WHERE user_id = " + user_id;
+                String query = "SELECT book_id, returnDate, transaction_id FROM transactions WHERE user_id = " + user_id;
                 PreparedStatement ps = connection.prepareStatement(query);
                 ResultSet rs = ps.executeQuery(query);
                 if (rs.next()){
@@ -48,8 +48,9 @@ public class Transaction {
                         String isbn = bookSet.getString("isbn");
                         String title = bookSet.getString("title");
                         Date returnDate = rs.getDate("returnDate");
+                        String transactionID = rs.getString("transaction_id");
 
-                        String[] data = {isbn, title, returnDate.toString()};
+                        String[] data = {isbn, title, returnDate.toString(), transactionID};
                         transactionModel.addRow(data);
                     }
                 } else {
