@@ -42,8 +42,6 @@ public class AddUser {
         JTextField lastName = new JTextField();
         JLabel phoneLabel = new JLabel("Phone Number:");
         JTextField phone = new JTextField();
-        JLabel idLabel = new JLabel("Student ID:");
-        JTextField id = new JTextField();
 
 
         textFieldPanel.add(firstNameLabel);
@@ -153,7 +151,7 @@ public class AddUser {
                     JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                
+
                 // Call the addUser method in the User class to add the user to the database
                 // Try catch block for the addUser method
                 try {
