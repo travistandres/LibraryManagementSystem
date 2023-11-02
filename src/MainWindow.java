@@ -7,6 +7,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.sql.SQLException;
 
@@ -171,15 +173,29 @@ public class MainWindow {
         source.removeFocusListener(this);
       }
     });
-
+    // Adding funtion to Search Bar DW 11/2/2023
+    Searching search = new Searching();
+    KeyListener keylistener = new KeyListener(){
+      public void keyPressed(KeyEvent keyEvent) {
+      }
+      @Override
+      public void keyTyped(KeyEvent e) {
+      }
+      @Override
+      public void keyReleased(KeyEvent e) {
+        search.search(1, mainSearch.getText(), bookModel, bookTable);
+      }
+    };
+    mainSearch.addKeyListener(keylistener);
+    
     // Adding Search Bar to TABLE pane
     TABLE.add(Box.createRigidArea(new Dimension(0, 30)));
     TABLE.add(mainSearch);
     TABLE.add(Box.createRigidArea(new Dimension(0, 10)));
-
+    
     // Book Table Column Names
     String[] columnNames = { "Book ID", "Title", "Author", "Genre", "ISBN" };
-
+    
     // Creating Book Table
     bookTable = new JTable(new DefaultTableModel(null, columnNames));
     bookModel = (DefaultTableModel) bookTable.getModel();
@@ -188,10 +204,10 @@ public class MainWindow {
     bookTable.setDefaultEditor(Object.class, null);
     // can only highlight one row at a time
     bookTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
+    
     // Adding Book Table to the Scroll Pane
     JScrollPane bookPane = new JScrollPane(bookTable);
-
+    
     // Centering Text on each cell on Book Table
     DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
     centerRenderer.setHorizontalAlignment(JLabel.CENTER);
