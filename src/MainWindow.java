@@ -183,7 +183,7 @@ public class MainWindow {
       }
       @Override
       public void keyReleased(KeyEvent e) {
-        search.search(1, mainSearch.getText(), bookModel, bookTable);
+        search.search(mainSearch.getText(), bookModel, bookTable);
       }
     };
     mainSearch.addKeyListener(keylistener);
