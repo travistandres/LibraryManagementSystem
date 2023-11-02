@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 
 public class CheckInForm {
   JDialog dialog;
@@ -79,7 +80,7 @@ public class CheckInForm {
     tablePanel.setLayout(new BoxLayout(tablePanel, BoxLayout.Y_AXIS));
 
     // Column Names
-    String columnNames[] = { "ISBN", "Book", "Return Date" };
+    String columnNames[] = { "ISBN", "Book", "Return Date", "Transaction ID" };
 
     // Creating Transaction Table
     JTable transactionTable = new JTable(new DefaultTableModel(null, columnNames));
@@ -88,6 +89,11 @@ public class CheckInForm {
     transactionTable.setDefaultEditor(Object.class, null);
     // only one row can be highlighted
     transactionTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+    // This block of code makes the Transaction ID invisible but still holds data
+    TableColumn column = transactionTable.getColumnModel().getColumn(3);
+    column.setMinWidth(0);
+    column.setMaxWidth(0);
 
     // Centering text on each cell
     DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -114,7 +120,7 @@ public class CheckInForm {
       @Override
       public void actionPerformed(ActionEvent e) {
         int selectedRow = transactionTable.getSelectedRow();
-        System.out.println(selectedRow);
+        int transaction_ID = Integer.valueOf((String) transactionTable.getModel().getValueAt(selectedRow, 3));
         if (transactionTable.getSelectionModel().isSelectionEmpty()) {
           JOptionPane.showMessageDialog(null, "Nothing is selected!", "Error Message",
               JOptionPane.ERROR_MESSAGE);
