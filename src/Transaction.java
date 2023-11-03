@@ -1,4 +1,4 @@
-//DW 10/30/2023
+//DW 11/3/2023
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
@@ -37,23 +37,30 @@ public class Transaction {
         try{
             connection = DriverManager.getConnection(url, username, password);
             try{
-                String query = "SELECT book_id, returnDate, transaction_id FROM transactions WHERE user_id = " + userID;
-                PreparedStatement ps = connection.prepareStatement(query);
-                ResultSet rs = ps.executeQuery(query);
-                if (rs.next()){
-                    int bookID = rs.getInt("book_id");
-                    String bookQuery = "Select isbn, title From book where book_id = " + bookID;
-                    PreparedStatement bookStatement = connection.prepareStatement(bookQuery);
-                    ResultSet bookSet = bookStatement.executeQuery(bookQuery);
+                String userQuery = "SELECT user_id FROM user WHERE user_id LIKE " + userID;
+                PreparedStatement userStatement = connection.prepareStatement(userQuery);
+                ResultSet userSet = userStatement.executeQuery();
+                if (userSet.next()) {
+                    String query = "SELECT book_id, returnDate, transaction_id FROM transactions WHERE user_id = " + userID;
+                    PreparedStatement ps = connection.prepareStatement(query);
+                    ResultSet rs = ps.executeQuery(query);
+                    if (rs.next()){
+                        int bookID = rs.getInt("book_id");
+                        String bookQuery = "Select isbn, title From book where book_id = " + bookID;
+                        PreparedStatement bookStatement = connection.prepareStatement(bookQuery);
+                        ResultSet bookSet = bookStatement.executeQuery(bookQuery);
 
-                    while (bookSet.next()) {
-                        String isbn = bookSet.getString("isbn");
-                        String title = bookSet.getString("title");
-                        Date returnDate = rs.getDate("returnDate");
-                        String transactionID = rs.getString("transaction_id");
+                        while (bookSet.next()) {
+                            String isbn = bookSet.getString("isbn");
+                            String title = bookSet.getString("title");
+                            Date returnDate = rs.getDate("returnDate");
+                            String transactionID = rs.getString("transaction_id");
 
-                        String[] data = {isbn, title, returnDate.toString(), transactionID};
-                        transactionModel.addRow(data);
+                            String[] data = {isbn, title, returnDate.toString(), transactionID};
+                            transactionModel.addRow(data);
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "User ID does not have any transactions", "Error Message", JOptionPane.ERROR_MESSAGE);
                     }
                 } else {
                     JOptionPane.showMessageDialog(null, "User ID not found!", "Error Message", JOptionPane.ERROR_MESSAGE);
