@@ -78,4 +78,36 @@ public class Transaction {
             e.printStackTrace();
           }
     }
+    public void addTransactionToLog(int transactionID) throws SQLException{
+        try {
+            connection = DriverManager.getConnection(url, username, password);
+            Date returnDate = null;
+            int userID = -1, bookID = -1;
+            try{
+                String sql = "SELECT returnDate, user_id, book_id FROM transactions WHERE transaction_id = " + transactionID;
+                PreparedStatement ps = connection.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery();
+                userID = rs.getInt("user_id");
+                bookID = rs.getInt("book_id");
+                returnDate = rs.getDate("returnDate");
+            } catch (SQLException e){
+                e.printStackTrace();
+            }
+            try{
+                if (userID != -1){
+                    String sql = "INSERT INTO transaction_log (returnDate, user_id, book_id)" + "VALUES (?, ?, ?)";
+                    PreparedStatement ps = connection.prepareStatement(sql);
+                    ps.setDate(1, returnDate);
+                    ps.setInt(2, userID);
+                    ps.setInt(3, bookID);
+                    ps.executeUpdate();
+                }
+                connection.close();
+            } catch (SQLException e){
+                e.printStackTrace();
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
 }
