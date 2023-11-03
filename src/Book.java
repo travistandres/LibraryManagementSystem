@@ -104,5 +104,27 @@ public class Book {
         e.printStackTrace();
       }
     }
-}
+    public boolean isAvailable(int bookID) throws SQLException{
+      boolean available = false;
+      try{
+        connection = DriverManager.getConnection(url, username, password);
+        try {
+          String sql = "SELECT availability FROM book WHERE book_id = " + bookID;
+          PreparedStatement ps = connection.prepareStatement(sql);
+          ResultSet rs = ps.executeQuery(sql);
+          while (rs.next()){
+            if (rs.getInt("availability") == 2){
+              available = true;
+            }
+          }
+        } catch (SQLException e){
+          e.printStackTrace();
+        }
+        connection.close();
+      } catch (SQLException e){
+        e.printStackTrace();
+      }
+      return available;
+    }
+  }
 //The database sees 2 as Available and 1 as Unavailable when talking about availability in the book table
