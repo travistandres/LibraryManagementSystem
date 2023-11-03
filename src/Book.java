@@ -20,10 +20,10 @@ public class Book {
           PreparedStatement ps = connection.prepareStatement(sql);
           ps.setInt(1, id);
           ps.executeUpdate();
-          connection.close();
         } catch (Exception e){
           e.printStackTrace();
         }
+        connection.close();
       } catch (Exception e){
         e.printStackTrace();
       }
@@ -38,10 +38,10 @@ public class Book {
               ps.setString(2, author);
               ps.setString(3, isbn);
               ps.executeUpdate();
-              connection.close();
             } catch (Exception e) {
-                e.printStackTrace();
+              e.printStackTrace();
             }
+            connection.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

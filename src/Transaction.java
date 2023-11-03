@@ -23,10 +23,10 @@ public class Transaction {
                 ps.setInt(2, userID);
                 ps.setInt(3, bookID);
                 ps.executeUpdate();
-                connection.close();
             } catch (SQLException e){
                 e.printStackTrace();
             }
+            connection.close();
         } catch (SQLException e){
             e.printStackTrace();
         }
@@ -59,6 +59,7 @@ public class Transaction {
             } catch (SQLException e){
                 e.printStackTrace();
             }
+            connection.close();
         } catch (SQLException e){
             e.printStackTrace();
         }
@@ -70,10 +71,10 @@ public class Transaction {
               String sql = "DELETE FROM transactions WHERE transaction_id = " + transactionID;
               PreparedStatement ps = connection.prepareStatement(sql);
               ps.executeUpdate();
-              connection.close();
             } catch (SQLException e){
               e.printStackTrace();
             }
+            connection.close();
           } catch (SQLException e){
             e.printStackTrace();
           }

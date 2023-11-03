@@ -21,10 +21,10 @@ public class User {
           PreparedStatement ps = connection.prepareStatement(sql);
           ps.setInt(1, id);
           ps.executeUpdate();
-          connection.close();
         } catch (Exception e){
           e.printStackTrace();
         }
+        connection.close();
       } catch (Exception e){
         e.printStackTrace();
       }
@@ -38,10 +38,10 @@ public class User {
               ps.setString(1, name);
               ps.setString(2, phoneNumber);
               ps.executeUpdate();
-              connection.close();
             } catch (Exception e) {
-                e.printStackTrace();
+              e.printStackTrace();
             }
+            connection.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
