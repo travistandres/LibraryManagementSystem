@@ -90,9 +90,11 @@ public class Transaction {
                 String sql = "SELECT returnDate, user_id, book_id FROM transactions WHERE transaction_id = " + transactionID;
                 PreparedStatement ps = connection.prepareStatement(sql);
                 ResultSet rs = ps.executeQuery();
-                userID = rs.getInt("user_id");
-                bookID = rs.getInt("book_id");
-                returnDate = rs.getDate("returnDate");
+                while (rs.next()){
+                    userID = rs.getInt("user_id");
+                    bookID = rs.getInt("book_id");
+                    returnDate = rs.getDate("returnDate");
+                }
                 dataCopied = true;
             } catch (SQLException e){
                 e.printStackTrace();
