@@ -105,13 +105,4 @@ public class Book {
       }
     }
 }
-enum Available{
-    UNAVAILABLE(1), 
-    AVAILABLE(2);
-
-    int value;
-
-    Available(int value){
-        this.value = value;
-    }
-}
+//The database sees 1 as Available and 2 as Unavailable when talking about availability in the book table
