@@ -63,7 +63,7 @@ public class Transaction {
             e.printStackTrace();
         }
     } 
-    public void deleteTransaction(int transactionID){
+    private void deleteTransaction(int transactionID) throws SQLException{
         try{
             connection = DriverManager.getConnection(url, username, password);
             try{
@@ -71,18 +71,20 @@ public class Transaction {
               PreparedStatement ps = connection.prepareStatement(sql);
               ps.executeUpdate();
               connection.close();
-            } catch (Exception e){
+            } catch (SQLException e){
               e.printStackTrace();
             }
-          } catch (Exception e){
+          } catch (SQLException e){
             e.printStackTrace();
           }
     }
-    public void addTransactionToLog(int transactionID) throws SQLException{
+    private boolean copyTransactionToLog(int transactionID) throws SQLException{
+        boolean dataTransfered = false;
         try {
             connection = DriverManager.getConnection(url, username, password);
             Date returnDate = null;
             int userID = -1, bookID = -1;
+            boolean dataCopied;
             try{
                 String sql = "SELECT returnDate, user_id, book_id FROM transactions WHERE transaction_id = " + transactionID;
                 PreparedStatement ps = connection.prepareStatement(sql);
@@ -90,21 +92,35 @@ public class Transaction {
                 userID = rs.getInt("user_id");
                 bookID = rs.getInt("book_id");
                 returnDate = rs.getDate("returnDate");
+                dataCopied = true;
             } catch (SQLException e){
                 e.printStackTrace();
+                dataCopied = false;
             }
-            try{
-                if (userID != -1){
-                    String sql = "INSERT INTO transaction_log (returnDate, user_id, book_id)" + "VALUES (?, ?, ?)";
+            if (dataCopied) {
+                try{
+                    String sql = "INSERT INTO transaction_log (returnDate, user_id, book_id, transaction_id)" + "VALUES (?, ?, ?, ?)";
                     PreparedStatement ps = connection.prepareStatement(sql);
                     ps.setDate(1, returnDate);
                     ps.setInt(2, userID);
                     ps.setInt(3, bookID);
+                    ps.setInt(4, transactionID);
                     ps.executeUpdate();
+                    dataTransfered = true;
+                } catch (SQLException e){
+                    e.printStackTrace();
                 }
-                connection.close();
-            } catch (SQLException e){
-                e.printStackTrace();
+            }
+            connection.close();
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return dataTransfered;
+    }
+    public void logAndDelete(int transactionID){
+        try{
+            if (copyTransactionToLog(transactionID)){
+                deleteTransaction(transactionID);
             }
         } catch (SQLException e){
             e.printStackTrace();
