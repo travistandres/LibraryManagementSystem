@@ -105,4 +105,4 @@ public class Book {
       }
     }
 }
-//The database sees 1 as Available and 2 as Unavailable when talking about availability in the book table
+//The database sees 2 as Available and 1 as Unavailable when talking about availability in the book table
