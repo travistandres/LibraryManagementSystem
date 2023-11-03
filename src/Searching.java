@@ -12,8 +12,8 @@ public class Searching {
             public boolean include(Entry entry) {
                 boolean hasMatch = false;
                 for (int i = 0; i < model.getColumnCount(); i++){
-                String string = entry.getStringValue(i);
-                    if (string.contains(searchFor)){
+                String string = entry.getStringValue(i).toLowerCase();
+                    if (string.contains(searchFor.toLowerCase())){
                         hasMatch = true;
                     }
                 }
