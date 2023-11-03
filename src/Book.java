@@ -32,11 +32,12 @@ public class Book {
         try{
             connection = DriverManager.getConnection(url, username, password);
             try{
-              String sql = "INSERT INTO book (title, author, isbn)" + "VALUES (?, ?, ?)";
+              String sql = "INSERT INTO book (title, author, isbn, availability)" + "VALUES (?, ?, ?, ?)";
               PreparedStatement ps = connection.prepareStatement(sql);
               ps.setString(1, title);
               ps.setString(2, author);
               ps.setString(3, isbn);
+              ps.setInt(4, 2);
               ps.executeUpdate();
             } catch (Exception e) {
               e.printStackTrace();
@@ -73,10 +74,40 @@ public class Book {
       e.printStackTrace();
     }
   }
+    public void makeAvailable(int bookID) throws SQLException{
+      try{
+        connection = DriverManager.getConnection(url, username, password);
+        try {
+          String sql = "UPDATE book SET availability = " + 2 + " WHERE book_id = " + bookID;
+          PreparedStatement ps = connection.prepareStatement(sql);
+          ps.executeUpdate(sql);
+        } catch (SQLException e) {
+          e.printStackTrace();
+        }
+        connection.close();
+      } catch (SQLException e){
+        e.printStackTrace();
+      }
+    }
+    public void makeUnavailable(int bookID) throws SQLException{
+      try{
+        connection = DriverManager.getConnection(url, username, password);
+        try {
+          String sql = "UPDATE book SET availability = " + 1 + " WHERE book_id = " + bookID;
+          PreparedStatement ps = connection.prepareStatement(sql);
+          ps.executeUpdate(sql);
+        } catch (SQLException e) {
+          e.printStackTrace();
+        }
+        connection.close();
+      } catch (SQLException e){
+        e.printStackTrace();
+      }
+    }
 }
 enum Available{
-    UNAVAILABLE(0), 
-    AVAILABLE(1);
+    UNAVAILABLE(1), 
+    AVAILABLE(2);
 
     int value;
 
