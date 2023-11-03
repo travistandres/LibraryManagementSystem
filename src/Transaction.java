@@ -13,6 +13,7 @@ public class Transaction {
     private final String username = "admin"; // Your MySQL username
     private final String password = "2QH03UdHKY8t9TT4PeSb"; // Your MySQL password
     private Connection connection;
+    private Book book = new Book();
     public void addTransaction(int bookID, int userID, Date returnDate) throws SQLException{
         try {
             connection = DriverManager.getConnection(url, username, password);
@@ -23,6 +24,7 @@ public class Transaction {
                 ps.setInt(2, userID);
                 ps.setInt(3, bookID);
                 ps.executeUpdate();
+                book.makeUnavailable(bookID);
             } catch (SQLException e){
                 e.printStackTrace();
             }
@@ -94,6 +96,7 @@ public class Transaction {
                     userID = rs.getInt("user_id");
                     bookID = rs.getInt("book_id");
                     returnDate = rs.getDate("returnDate");
+                    book.makeAvailable(bookID);
                 }
                 dataCopied = true;
             } catch (SQLException e){
