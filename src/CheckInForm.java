@@ -4,6 +4,8 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -126,7 +128,10 @@ public class CheckInForm {
               JOptionPane.ERROR_MESSAGE);
         } else {
           try {
-            // INSERT Check In/removeTransaction method here
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            java.util.Date date = sdf.parse(java.time.LocalDate.now().toString());
+            java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+            transaction.logAndDelete(transaction_ID, sqlDate);
             JOptionPane.showMessageDialog(null, "Checked-In Successfully.");
             // removes the row that they checked in
             transactionModel.removeRow(selectedRow);
