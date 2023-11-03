@@ -78,7 +78,7 @@ public class Transaction {
             e.printStackTrace();
           }
     }
-    private boolean copyTransactionToLog(int transactionID) throws SQLException{
+    private boolean copyTransactionToLog(int transactionID, Date dateReturned) throws SQLException{
         boolean dataTransfered = false;
         try {
             connection = DriverManager.getConnection(url, username, password);
@@ -99,12 +99,13 @@ public class Transaction {
             }
             if (dataCopied) {
                 try{
-                    String sql = "INSERT INTO transaction_log (returnDate, user_id, book_id, transaction_id)" + "VALUES (?, ?, ?, ?)";
+                    String sql = "INSERT INTO transaction_log (returnDate, user_id, book_id, transaction_id, dateReturned)" + "VALUES (?, ?, ?, ?, ?)";
                     PreparedStatement ps = connection.prepareStatement(sql);
                     ps.setDate(1, returnDate);
                     ps.setInt(2, userID);
                     ps.setInt(3, bookID);
                     ps.setInt(4, transactionID);
+                    ps.setDate(5, dateReturned);
                     ps.executeUpdate();
                     dataTransfered = true;
                 } catch (SQLException e){
@@ -117,9 +118,9 @@ public class Transaction {
         }
         return dataTransfered;
     }
-    public void logAndDelete(int transactionID){
+    public void logAndDelete(int transactionID, Date dateReturned){
         try{
-            if (copyTransactionToLog(transactionID)){
+            if (copyTransactionToLog(transactionID, dateReturned)){
                 deleteTransaction(transactionID);
             }
         } catch (SQLException e){
