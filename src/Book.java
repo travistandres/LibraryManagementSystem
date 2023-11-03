@@ -113,7 +113,7 @@ public class Book {
           PreparedStatement ps = connection.prepareStatement(sql);
           ResultSet rs = ps.executeQuery(sql);
           while (rs.next()){
-            if (rs.getInt("availability") == 2){
+            if (rs.getString("availability").equals("Available")){
               available = true;
             }
           }
