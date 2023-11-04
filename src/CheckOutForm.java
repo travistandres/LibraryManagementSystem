@@ -157,7 +157,11 @@ public class CheckOutForm {
       @Override
       public void actionPerformed(ActionEvent e) {
         // Gets the input from the form and then puts it into the database
-        getInput();
+        try {
+          getInput();
+        } catch (SQLException e1) {
+          e1.printStackTrace();
+        }
       }
     });
 
@@ -258,19 +262,22 @@ public class CheckOutForm {
     dialog.setVisible(true);
   }
 
-  void getInput() {
+  void getInput() throws SQLException {
+    int userID = Integer.parseInt(userField.getText());
+    int bookID = Integer.parseInt(bookField.getText());
+    int day = dateModel.getDay();
+    // + 1 because when selecting from the calendar GUI, it reduces the month by 1,
+    // probably an error in the package code
+    int month = dateModel.getMonth() + 1;
+    int year = dateModel.getYear();
+    String newDate = year + "-" + month + "-" + day;
+
     if (userField.getText().isEmpty() || bookField.getText().isEmpty() || dateModel.getValue() == null) {
       JOptionPane.showMessageDialog(null, "Not All Fields Were Filled Out.", "Error Message",
           JOptionPane.ERROR_MESSAGE);
-    } else {
-      int userID = Integer.parseInt(userField.getText());
-      int bookID = Integer.parseInt(bookField.getText());
-      int day = dateModel.getDay();
-      // + 1 because when selecting from the calendar GUI, it reduces the month by 1,
-      // probably an error in the package code
-      int month = dateModel.getMonth() + 1;
-      int year = dateModel.getYear();
-      String newDate = year + "-" + month + "-" + day;
+    }
+
+    if (book.isAvailable(bookID)) {
 
       SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -283,6 +290,9 @@ public class CheckOutForm {
         JOptionPane.showMessageDialog(null, "Failed to add, please try again.");
         e.printStackTrace();
       }
+    } else {
+      JOptionPane.showMessageDialog(null, "Book is Unavailable!", "Error Message",
+          JOptionPane.ERROR_MESSAGE);
     }
   }
 
