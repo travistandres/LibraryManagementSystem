@@ -99,11 +99,12 @@ public class AddBook {
                 String titleText = title.getText();
                 String isbnString = isbn.getText();
                 String authorText = author.getText();
+                String genreText = genreList.getSelectedItem().toString();
                 // Try catch block for the addBook method
                 try 
                 {
                     Book book = new Book();
-                    book.addBook(titleText, authorText, isbnString); // Call the addBook method in the Book class to add the book to the database
+                    book.addBook(titleText, authorText, isbnString, genreText); // Call the addBook method in the Book class to add the book to the database
                     addBookFrame.dispose(); // Close the Add Book GUI
                 } catch (Exception exception) {
                     errorPopup();
@@ -157,12 +158,13 @@ public class AddBook {
                 String titleText = title.getText();
                 String isbnString = isbn.getText();
                 String authorText = author.getText();
+                String genreText = genreList.getSelectedItem().toString();
                 // Call the addBook method in the Book class to add the book to the database
                 // Try catch block for the addBook method
                 try 
                 {
                     Book book = new Book();
-                    book.addBook(titleText, authorText, isbnString); // Call the addBook method in the Book class to add the book to the database
+                    book.addBook(titleText, authorText, isbnString, genreText); // Call the addBook method in the Book class to add the book to the database
                     openBookGUI(parent); // Open another Add Book GUI
                     addBookFrame.dispose(); // Close the Add Book GUI
                 } catch (Exception exception) {
