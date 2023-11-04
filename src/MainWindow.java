@@ -31,8 +31,10 @@ public class MainWindow {
   JPanel leftPanel;
   JPanel rightPanel;
 
-  private int focusedPane = 0; //1 will represent the userPane, 0 will represent the bookPane (if a third tab is added this will no longer work)
-  private String bookSearch = ""; //Holds the text in the search bar so when searching the textarea will be different depending on which table is being searched
+  private int focusedPane = 0; // 1 will represent the userPane, 0 will represent the bookPane (if a third tab
+                               // is added this will no longer work)
+  private String bookSearch = ""; // Holds the text in the search bar so when searching the textarea will be
+                                  // different depending on which table is being searched
   private String userSearch = "";
 
   private JButton addBook;
@@ -180,18 +182,20 @@ public class MainWindow {
         source.removeFocusListener(this);
       }
     });
-    //#region Adding funtion to Search Bar DW 11/2/2023
+    // #region Adding funtion to Search Bar DW 11/2/2023
     Searching search = new Searching();
 
-    KeyListener keylistener = new KeyListener(){
+    KeyListener keylistener = new KeyListener() {
       public void keyPressed(KeyEvent keyEvent) {
       }
+
       @Override
       public void keyTyped(KeyEvent e) {
       }
+
       @Override
       public void keyReleased(KeyEvent e) {
-        if (focusedPane != 1){
+        if (focusedPane != 1) {
           search.search(mainSearch.getText(), bookModel, bookTable);
         } else {
           search.search(mainSearch.getText(), userModel, userTable);
@@ -199,16 +203,16 @@ public class MainWindow {
       }
     };
     mainSearch.addKeyListener(keylistener);
-    //#endregion
-    
+    // #endregion
+
     // Adding Search Bar to TABLE pane
     TABLE.add(Box.createRigidArea(new Dimension(0, 30)));
     TABLE.add(mainSearch);
     TABLE.add(Box.createRigidArea(new Dimension(0, 10)));
-    
+
     // Book Table Column Names
     String[] columnNames = { "Book ID", "Title", "Author", "Genre", "ISBN" };
-    
+
     // Creating Book Table
     bookTable = new JTable(new DefaultTableModel(null, columnNames));
     bookModel = (DefaultTableModel) bookTable.getModel();
@@ -217,10 +221,10 @@ public class MainWindow {
     bookTable.setDefaultEditor(Object.class, null);
     // can only highlight one row at a time
     bookTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    
+
     // Adding Book Table to the Scroll Pane
     JScrollPane bookPane = new JScrollPane(bookTable);
-    
+
     // Centering Text on each cell on Book Table
     DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
     centerRenderer.setHorizontalAlignment(JLabel.CENTER);
@@ -276,14 +280,18 @@ public class MainWindow {
     tablePane.addChangeListener(new ChangeListener() {
       @Override
       public void stateChanged(ChangeEvent e) {
-        if (focusedPane == 0){
+        if (focusedPane == 0) {
           bookSearch = mainSearch.getText();
           mainSearch.setText(userSearch);
           focusedPane = 1;
+          // TT 11-04-23 clears focus on the Book Table when other tab has focus
+          bookTable.clearSelection();
         } else {
           userSearch = mainSearch.getText();
           mainSearch.setText(bookSearch);
           focusedPane = 0;
+          // TT 11-04-23 clears focus on the User Table
+          userTable.clearSelection();
         }
       }
     });
@@ -307,41 +315,85 @@ public class MainWindow {
         int userTableFocus = userTable.getSelectedRow();
         if (userTableFocus >= 0) {
           JOptionPane.showMessageDialog(null, "EDIT User", "Error Message", JOptionPane.ERROR_MESSAGE);
-          // Clears focus of the User Table
-          userTable.clearSelection();
         }
 
         // if Book Table is in focus, pops up an edit form for books
         int bookTableFocus = bookTable.getSelectedRow();
         if (bookTableFocus >= 0) {
           JOptionPane.showMessageDialog(null, "EDIT Book", "Error Message", JOptionPane.ERROR_MESSAGE);
-          bookTable.clearSelection();
         }
       }
     });
 
-    // Enabling Buttons and Clearing Focus on the User Table
-    userTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-      public void valueChanged(ListSelectionEvent event) {
-
-        // enables the Edit and Remove button if a row is selected in the User Table
-        edit.setEnabled(true);
-        remove.setEnabled(true);
-
-        // disables the Edit and Remove buttons when it loses focus
-        if (userTable.getSelectionModel().isSelectionEmpty()) {
-          edit.setEnabled(false);
-          remove.setEnabled(false);
+    // Action Listener for Remove button
+    remove.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        // if Book Table is in focus, pops up a confirmation for removing selected book
+        int bookSelectedRow = bookTable.getSelectedRow();
+        if (bookSelectedRow >= 0) {
+          String message = "Are you sure you want to remove \""
+              + bookTable.getModel().getValueAt(bookSelectedRow, 1)
+              + "\" by " + bookTable.getModel().getValueAt(bookSelectedRow, 2) + "?";
+          int reply = JOptionPane.showConfirmDialog(null, message, "Remove Book", JOptionPane.YES_NO_OPTION);
+          if (reply == JOptionPane.YES_OPTION) {
+            String message1 = "Are you REALLY sure you want to remove \""
+                + bookTable.getModel().getValueAt(bookSelectedRow, 1)
+                + "\" by " + bookTable.getModel().getValueAt(bookSelectedRow, 2) + "?  (This action cannot be undone)";
+            int reply1 = JOptionPane.showConfirmDialog(null, message1, "Remove Book", JOptionPane.YES_NO_OPTION);
+            if (reply1 == JOptionPane.YES_OPTION) {
+              // Deletes the data in the database
+              int book_ID = Integer.valueOf((String) bookTable.getModel().getValueAt(bookSelectedRow, 0));
+              try {
+                book.deleteBook(book_ID);
+              } catch (Exception e1) {
+                JOptionPane.showMessageDialog(null, "Failed to remove, please try again.");
+                e1.printStackTrace();
+              }
+              bookModel.removeRow(bookSelectedRow);
+              JOptionPane.showMessageDialog(null, "Book removed");
+            } else {
+              JOptionPane.showMessageDialog(null, "Removal of book canceled.");
+            }
+          } else {
+            JOptionPane.showMessageDialog(null, "Removal of book canceled.");
+          }
         }
 
-        // clears the focus on the Book Table when they select a row from the User Table
-        if (!userTable.getSelectionModel().isSelectionEmpty()) {
-          bookTable.clearSelection();
+        // if User Table is in focus, pops up a confirmation for removing selected user
+        int userSelectedRow = userTable.getSelectedRow();
+        if (userSelectedRow >= 0) {
+          String message = "Are you sure you want to remove \""
+              + userTable.getModel().getValueAt(userSelectedRow, 1)
+              + "\"?";
+          int reply = JOptionPane.showConfirmDialog(null, message, "Remove User", JOptionPane.YES_NO_OPTION);
+          if (reply == JOptionPane.YES_OPTION) {
+            String message1 = "Are you REALLY sure you want to remove \""
+                + userTable.getModel().getValueAt(userSelectedRow, 1)
+                + "\"? (This action cannot be undone)";
+            int reply1 = JOptionPane.showConfirmDialog(null, message1, "Remove User", JOptionPane.YES_NO_OPTION);
+            if (reply1 == JOptionPane.YES_OPTION) {
+              // Deletes the data in the database
+              int user_ID = Integer.valueOf((String) userTable.getModel().getValueAt(userSelectedRow, 0));
+              try {
+                user.deleteUser(user_ID);
+              } catch (Exception e1) {
+                JOptionPane.showMessageDialog(null, "Failed to remove, please try again.");
+                e1.printStackTrace();
+              }
+              userModel.removeRow(userSelectedRow);
+              JOptionPane.showMessageDialog(null, "Book removed");
+            } else {
+              JOptionPane.showMessageDialog(null, "Removal of book canceled.");
+            }
+          } else {
+            JOptionPane.showMessageDialog(null, "Removal of book canceled.");
+          }
         }
       }
     });
 
-    // Enabling Buttons and Clearing Focus on the Book Table
+    // Enabling Buttons when Book Table is in focus
     bookTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
       public void valueChanged(ListSelectionEvent event) {
         // enables the Edit and Remove button if a row is selected in the Book Table
@@ -353,10 +405,21 @@ public class MainWindow {
           edit.setEnabled(false);
           remove.setEnabled(false);
         }
+      }
+    });
 
-        // clears the focus on the User Table when they select a row from the Book Table
-        if (!bookTable.getSelectionModel().isSelectionEmpty()) {
-          userTable.clearSelection();
+    // Enabling Buttons when User Table is in focus
+    userTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+      public void valueChanged(ListSelectionEvent event) {
+
+        // enables the Edit and Remove button if a row is selected in the User Table
+        edit.setEnabled(true);
+        remove.setEnabled(true);
+
+        // disables the Edit and Remove buttons when it loses focus
+        if (userTable.getSelectionModel().isSelectionEmpty()) {
+          edit.setEnabled(false);
+          remove.setEnabled(false);
         }
       }
     });
