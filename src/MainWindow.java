@@ -219,6 +219,7 @@ public class MainWindow {
     // Creating Book Table
     bookTable = new JTable(new DefaultTableModel(null, columnNames));
     bookModel = (DefaultTableModel) bookTable.getModel();
+    // Starts a thread to get Book Data from the database
     Runnable bookWorker = new BookTableWorker(bookModel);
     Thread bookThread = new Thread(bookWorker);
     bookThread.start();
@@ -239,17 +240,17 @@ public class MainWindow {
       bookTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
     }
 
-    // Adding data to Book Table DW 10/25/2023
-
     // User Table Column Names
     String[] columnNames1 = { "User ID", "Name", "Phone Number" };
 
     // Creating User Table
     userTable = new JTable(new DefaultTableModel(null, columnNames1));
     userModel = (DefaultTableModel) userTable.getModel();
+    // Starts a Thread to get Data from the database
     Runnable userWorker = new UserTableWorker(userModel);
     Thread userThread = new Thread(userWorker);
     userThread.start();
+
     // column headers is not draggable
     userTable.getTableHeader().setReorderingAllowed(false);
     userTable.setDefaultEditor(Object.class, null);
@@ -264,14 +265,6 @@ public class MainWindow {
     for (int i = 0; i < columnNames1.length; i++) {
       userTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
     }
-
-    // Adding data to User Table
-    // User user = new User();
-    // try {
-    // user.displayUsers(userModel);
-    // } catch (SQLException e1) {
-    // e1.printStackTrace();
-    // }
 
     // Adding Tables to Tabs then to the TABLE Frame
     JTabbedPane tablePane = new JTabbedPane();
