@@ -2,22 +2,14 @@
 // Travis Tan
 // 10-23-23
 import java.awt.*;
-import java.awt.event.AWTEventListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowFocusListener;
-import java.sql.SQLException;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -25,9 +17,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
-
-import org.w3c.dom.events.MouseEvent;
 
 public class MainWindow {
   JFrame frame;
@@ -322,12 +311,13 @@ public class MainWindow {
         // if User Table is in focus, pops up an edit form for users
         int userTableFocus = userTable.getSelectedRow();
         if (userTableFocus >= 0) {
+          int user_ID = Integer.valueOf((String) userTable.getModel().getValueAt(userTableFocus, 0));
           String name = (String) userTable.getModel().getValueAt(userTableFocus, 1);
           String phoneNumber = (String) userTable.getModel().getValueAt(userTableFocus, 2);
           SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-              new EditUserForm(frame, name, phoneNumber);
+              new EditUserForm(frame, user_ID, name, phoneNumber);
             }
           });
         }
@@ -335,13 +325,14 @@ public class MainWindow {
         // if Book Table is in focus, pops up an edit form for books
         int bookTableFocus = bookTable.getSelectedRow();
         if (bookTableFocus >= 0) {
+          int book_ID = Integer.valueOf((String) bookTable.getModel().getValueAt(bookTableFocus, 0));
           String title = (String) bookTable.getModel().getValueAt(bookTableFocus, 1);
           String author = (String) bookTable.getModel().getValueAt(bookTableFocus, 2);
           String genre = (String) bookTable.getModel().getValueAt(bookTableFocus, 3);
           SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-              new EditBookForm(frame, title, author, genre);
+              new EditBookForm(frame, book_ID, title, author, genre);
             }
           });
         }

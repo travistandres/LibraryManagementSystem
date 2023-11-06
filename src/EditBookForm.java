@@ -23,7 +23,7 @@ public class EditBookForm {
 
   User user = new User();
 
-  EditBookForm(JFrame frame, String title, String author, String genre) {
+  EditBookForm(JFrame frame, int book_ID, String title, String author, String genre) {
     dialog = new JDialog(frame);
     dialog.setTitle("Edit Book Form");
     dialog.setSize(300, 350);
@@ -115,7 +115,7 @@ public class EditBookForm {
       @Override
       public void actionPerformed(ActionEvent e) {
         try {
-          getInput();
+          getInput(book_ID);
           JOptionPane.showMessageDialog(null, "Edits have been saved.");
           dialog.dispose();
         } catch (Exception e1) {
@@ -148,7 +148,7 @@ public class EditBookForm {
     dialog.setVisible(true);
   }
 
-  void getInput() throws SQLException {
+  void getInput(int book_ID) throws SQLException {
     String title = titleField.getText();
     String author = authorField.getText();
     String genre = genreList.getSelectedItem().toString();

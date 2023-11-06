@@ -21,7 +21,7 @@ public class EditUserForm {
 
   User user = new User();
 
-  EditUserForm(JFrame frame, String name, String phoneNumber) {
+  EditUserForm(JFrame frame, int user_ID, String name, String phoneNumber) {
     dialog = new JDialog(frame);
     dialog.setTitle("Edit User Form");
     dialog.setSize(300, 350);
@@ -94,7 +94,7 @@ public class EditUserForm {
       @Override
       public void actionPerformed(ActionEvent e) {
         try {
-          getInput();
+          getInput(user_ID);
           JOptionPane.showMessageDialog(null, "Edits have been saved.");
           dialog.dispose();
         } catch (Exception e1) {
@@ -128,7 +128,7 @@ public class EditUserForm {
     dialog.setVisible(true);
   }
 
-  void getInput() throws SQLException {
+  void getInput(int user_ID) throws SQLException {
     String name = nameTextField.getText();
     String phoneNumber = phoneTextField.getText();
 
