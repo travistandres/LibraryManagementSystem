@@ -50,7 +50,11 @@ public class MainWindow {
   JTable userTable;
   JTable bookTable;
 
+  User user = new User();
+  Book book = new Book();
+
   MainWindow() {
+
     // Main Window
     frame = new JFrame("Library Management System");
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -212,10 +216,13 @@ public class MainWindow {
 
     // Book Table Column Names
     String[] columnNames = { "Book ID", "Title", "Author", "Genre", "ISBN" };
-
     // Creating Book Table
     bookTable = new JTable(new DefaultTableModel(null, columnNames));
     bookModel = (DefaultTableModel) bookTable.getModel();
+    Runnable bookWorker = new BookTableWorker(bookModel);
+    Thread bookThread = new Thread(bookWorker);
+    bookThread.start();
+
     // column header is not draggable
     bookTable.getTableHeader().setReorderingAllowed(false);
     bookTable.setDefaultEditor(Object.class, null);
@@ -233,12 +240,6 @@ public class MainWindow {
     }
 
     // Adding data to Book Table DW 10/25/2023
-    Book book = new Book();
-    try {
-      book.displayBooks(bookModel);
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
 
     // User Table Column Names
     String[] columnNames1 = { "User ID", "Name", "Phone Number" };
@@ -246,6 +247,9 @@ public class MainWindow {
     // Creating User Table
     userTable = new JTable(new DefaultTableModel(null, columnNames1));
     userModel = (DefaultTableModel) userTable.getModel();
+    Runnable userWorker = new UserTableWorker(userModel);
+    Thread userThread = new Thread(userWorker);
+    userThread.start();
     // column headers is not draggable
     userTable.getTableHeader().setReorderingAllowed(false);
     userTable.setDefaultEditor(Object.class, null);
@@ -262,12 +266,12 @@ public class MainWindow {
     }
 
     // Adding data to User Table
-    User user = new User();
-    try {
-      user.displayUsers(userModel);
-    } catch (SQLException e1) {
-      e1.printStackTrace();
-    }
+    // User user = new User();
+    // try {
+    // user.displayUsers(userModel);
+    // } catch (SQLException e1) {
+    // e1.printStackTrace();
+    // }
 
     // Adding Tables to Tabs then to the TABLE Frame
     JTabbedPane tablePane = new JTabbedPane();
