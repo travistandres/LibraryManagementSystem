@@ -11,6 +11,9 @@ import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 import java.sql.SQLException;
 
 import javax.swing.*;
@@ -42,13 +45,21 @@ public class MainWindow {
   private JButton checkIn;
   private JButton checkOut;
 
-  private DefaultTableModel bookModel;
-  private DefaultTableModel userModel;
+  static DefaultTableModel bookModel;
+  static DefaultTableModel userModel;
 
   private JTextField mainSearch;
 
   JTable userTable;
   JTable bookTable;
+
+  Runnable bookWorker;
+  Thread bookThread;
+  Runnable userWorker;
+  Thread userThread;
+
+  Thread bookThread2;
+  Thread userThread2;
 
   User user = new User();
   Book book = new Book();
@@ -220,8 +231,8 @@ public class MainWindow {
     bookTable = new JTable(new DefaultTableModel(null, columnNames));
     bookModel = (DefaultTableModel) bookTable.getModel();
     // Starts a thread to get Book Data from the database
-    Runnable bookWorker = new BookTableWorker(bookModel);
-    Thread bookThread = new Thread(bookWorker);
+    bookWorker = new BookTableWorker(bookModel);
+    bookThread = new Thread(bookWorker);
     bookThread.start();
 
     // column header is not draggable
@@ -247,8 +258,8 @@ public class MainWindow {
     userTable = new JTable(new DefaultTableModel(null, columnNames1));
     userModel = (DefaultTableModel) userTable.getModel();
     // Starts a Thread to get Data from the database
-    Runnable userWorker = new UserTableWorker(userModel);
-    Thread userThread = new Thread(userWorker);
+    userWorker = new UserTableWorker(userModel);
+    userThread = new Thread(userWorker);
     userThread.start();
 
     // column headers is not draggable
@@ -311,13 +322,28 @@ public class MainWindow {
         // if User Table is in focus, pops up an edit form for users
         int userTableFocus = userTable.getSelectedRow();
         if (userTableFocus >= 0) {
-          JOptionPane.showMessageDialog(null, "EDIT User", "Error Message", JOptionPane.ERROR_MESSAGE);
+          String name = (String) userTable.getModel().getValueAt(userTableFocus, 1);
+          String phoneNumber = (String) userTable.getModel().getValueAt(userTableFocus, 2);
+          SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+              new EditUserForm(frame, name, phoneNumber);
+            }
+          });
         }
 
         // if Book Table is in focus, pops up an edit form for books
         int bookTableFocus = bookTable.getSelectedRow();
         if (bookTableFocus >= 0) {
-          JOptionPane.showMessageDialog(null, "EDIT Book", "Error Message", JOptionPane.ERROR_MESSAGE);
+          String title = (String) bookTable.getModel().getValueAt(bookTableFocus, 1);
+          String author = (String) bookTable.getModel().getValueAt(bookTableFocus, 2);
+          String genre = (String) bookTable.getModel().getValueAt(bookTableFocus, 3);
+          SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+              new EditBookForm(frame, title, author, genre);
+            }
+          });
         }
       }
     });
@@ -426,6 +452,5 @@ public class MainWindow {
     bottomRight.add(edit);
     bottomRight.add(Box.createRigidArea(new Dimension(10, 0)));
     bottomRight.add(remove);
-
   }
 }

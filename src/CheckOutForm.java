@@ -41,6 +41,8 @@ public class CheckOutForm {
 
   Runnable bookWorker;
   Thread bookThread;
+  Runnable userWorker;
+  Thread userThread;
 
   User user = new User();
   Book book = new Book();
@@ -234,8 +236,8 @@ public class CheckOutForm {
     JTable userTable = new JTable(new DefaultTableModel(null, columnNames1));
     userModel = (DefaultTableModel) userTable.getModel();
     // Starts a Thread to get Data from the database
-    Runnable userWorker = new UserTableWorker(userModel);
-    Thread userThread = new Thread(userWorker);
+    userWorker = new UserTableWorker(userModel);
+    userThread = new Thread(userWorker);
     userThread.start();
 
     // column header is not draggable
