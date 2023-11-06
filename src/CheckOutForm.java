@@ -39,6 +39,11 @@ public class CheckOutForm {
   private DefaultTableModel bookModel;
   private DefaultTableModel userModel;
 
+  Runnable bookWorker;
+  Thread bookThread;
+  Runnable userWorker;
+  Thread userThread;
+
   User user = new User();
   Book book = new Book();
   Transaction transaction = new Transaction();
@@ -204,6 +209,12 @@ public class CheckOutForm {
     // Creating Book Table
     JTable bookTable = new JTable(new DefaultTableModel(null, columnNames));
     bookModel = (DefaultTableModel) bookTable.getModel();
+    // Starts a thread to get Book Data from the database
+    bookWorker = new BookTableWorker(bookModel);
+    bookThread = new Thread(bookWorker);
+    bookThread.start();
+
+    // column header is not draggable
     bookTable.getTableHeader().setReorderingAllowed(false);
     bookTable.setDefaultEditor(Object.class, null);
     // can only highlight one row at a time
@@ -218,19 +229,18 @@ public class CheckOutForm {
       bookTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
     }
 
-    // Adding data to User Table
-    try {
-      book.displayBooks(bookModel);
-    } catch (SQLException e1) {
-      e1.printStackTrace();
-    }
-
     // User Table Column Names
     String[] columnNames1 = { "User ID", "Name", "Phone Number" };
 
     // Creating User Table
     JTable userTable = new JTable(new DefaultTableModel(null, columnNames1));
     userModel = (DefaultTableModel) userTable.getModel();
+    // Starts a Thread to get Data from the database
+    userWorker = new UserTableWorker(userModel);
+    userThread = new Thread(userWorker);
+    userThread.start();
+
+    // column header is not draggable
     userTable.getTableHeader().setReorderingAllowed(false);
     userTable.setDefaultEditor(Object.class, null);
     // can only highlight one row at a time
@@ -245,13 +255,6 @@ public class CheckOutForm {
       userTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
     }
 
-    // Adding data to User Table
-    try {
-      user.displayUsers(userModel);
-    } catch (SQLException e1) {
-      e1.printStackTrace();
-    }
-
     // Adding Tables to Tabs then to the TABLE Frame
     JTabbedPane tablePane = new JTabbedPane();
     tablePane.add("Books", bookPane);
@@ -263,36 +266,36 @@ public class CheckOutForm {
   }
 
   void getInput() throws SQLException {
-    int userID = Integer.parseInt(userField.getText());
-    int bookID = Integer.parseInt(bookField.getText());
-    int day = dateModel.getDay();
-    // + 1 because when selecting from the calendar GUI, it reduces the month by 1,
-    // probably an error in the package code
-    int month = dateModel.getMonth() + 1;
-    int year = dateModel.getYear();
-    String newDate = year + "-" + month + "-" + day;
-
     if (userField.getText().isEmpty() || bookField.getText().isEmpty() || dateModel.getValue() == null) {
       JOptionPane.showMessageDialog(null, "Not All Fields Were Filled Out.", "Error Message",
           JOptionPane.ERROR_MESSAGE);
-    }
-
-    if (book.isAvailable(bookID)) {
-
-      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-      try {
-        java.util.Date date = sdf.parse(newDate);
-        java.sql.Date sqlDate = new java.sql.Date(date.getTime());
-        transaction.addTransaction(bookID, userID, sqlDate);
-        JOptionPane.showMessageDialog(null, "Checked-Out Successfully.");
-      } catch (Exception e) {
-        JOptionPane.showMessageDialog(null, "Failed to add, please try again.");
-        e.printStackTrace();
-      }
     } else {
-      JOptionPane.showMessageDialog(null, "Book is Unavailable!", "Error Message",
-          JOptionPane.ERROR_MESSAGE);
+      int userID = Integer.parseInt(userField.getText());
+      int bookID = Integer.parseInt(bookField.getText());
+      int day = dateModel.getDay();
+      // + 1 because when selecting from the calendar GUI, it reduces the month by 1,
+      // probably an error in the package code
+      int month = dateModel.getMonth() + 1;
+      int year = dateModel.getYear();
+      String newDate = year + "-" + month + "-" + day;
+
+      if (book.isAvailable(bookID)) {
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        try {
+          java.util.Date date = sdf.parse(newDate);
+          java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+          transaction.addTransaction(bookID, userID, sqlDate);
+          JOptionPane.showMessageDialog(null, "Checked-Out Successfully.");
+        } catch (Exception e) {
+          JOptionPane.showMessageDialog(null, "Failed to add, please try again.");
+          e.printStackTrace();
+        }
+      } else {
+        JOptionPane.showMessageDialog(null, "Book is Unavailable!", "Error Message",
+            JOptionPane.ERROR_MESSAGE);
+      }
     }
   }
 
