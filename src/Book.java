@@ -127,5 +127,49 @@ public class Book {
       }
       return available;
     }
+
+    // J.E. 10/23/2020
+    // Method to verify if the ISBN is a duplicate
+    public static boolean verifyISBN(String isbn) 
+    {
+        final String url = "jdbc:mysql://librarydatabase.cupwod9sczsb.us-east-2.rds.amazonaws.com:3306/LibraryManagementSystem";
+        final String username = "admin"; // Your MySQL username
+        final String password = "2QH03UdHKY8t9TT4PeSb"; // Your MySQL password
+
+        String query = "SELECT isbn FROM book WHERE isbn = ?";
+
+        try {
+            // Establish a database connection
+            Connection connection = DriverManager.getConnection(url, username, password);
+
+            // Create a PreparedStatement with the SQL query
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, isbn);
+
+            // Execute the query
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            // Check if there are results
+            if (resultSet.next()) // Value in the database matches the string
+            {
+                // Close resources
+                resultSet.close();
+                preparedStatement.close();
+                connection.close();
+                return true;
+            } 
+            else  // No match found
+            {
+                // Close resources
+                resultSet.close();
+                preparedStatement.close();
+                connection.close();
+                return false;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
   }
 //The database sees 2 as Available and 1 as Unavailable when talking about availability in the book table

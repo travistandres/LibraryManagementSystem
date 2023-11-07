@@ -6,13 +6,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import java.sql.Connection;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 public class AddUser {
     public static void openAddUserGUI(JFrame parent) {
         // Create the main JFrame for the Add User GUI
@@ -88,14 +81,6 @@ public class AddUser {
                 String fullName = firstName.getText() + " " + lastName.getText();
                 String phoneNumber = phone.getText();
 
-                // Check if the user already exists
-                if(verifyUser(fullName))
-                {
-                    JOptionPane.showMessageDialog(null, "User already exists.", "Error Message",
-                    JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
                 // Call the addUser method in the User class to add the user to the database
                 // Try catch block for the addUser method
                 try {
@@ -143,14 +128,6 @@ public class AddUser {
                 // Save the text entered in the text fields
                 String fullName = firstName.getText() + " " + lastName.getText();
                 String phoneNumber = phone.getText();
-
-                // Check if the user already exists
-                if(verifyUser(fullName))
-                {
-                    JOptionPane.showMessageDialog(null, "User already exists.", "Error Message",
-                    JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
 
                 // Call the addUser method in the User class to add the user to the database
                 // Try catch block for the addUser method
@@ -220,48 +197,5 @@ public class AddUser {
         errorPanel.add(errorLabel);
 
         errorFrame.setVisible(true);
-    }
-
-    // Method to verify if the user is a duplicate
-    public static boolean verifyUser(String name) 
-    {
-        final String url = "jdbc:mysql://librarydatabase.cupwod9sczsb.us-east-2.rds.amazonaws.com:3306/LibraryManagementSystem";
-        final String username = "admin"; // Your MySQL username
-        final String password = "2QH03UdHKY8t9TT4PeSb"; // Your MySQL password
-
-        String query = "SELECT fullName FROM user WHERE fullName = ?";
-
-        try {
-            // Establish a database connection
-            Connection connection = DriverManager.getConnection(url, username, password);
-
-            // Create a PreparedStatement with the SQL query
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, name);
-
-            // Execute the query
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            // Check if there are results
-            if (resultSet.next()) // Value in the database matches the string
-            {
-                // Close resources
-                resultSet.close();
-                preparedStatement.close();
-                connection.close();
-                return true;
-            } 
-            else  // No match found
-            {
-                // Close resources
-                resultSet.close();
-                preparedStatement.close();
-                connection.close();
-                return false;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return true;
     }
 }
