@@ -132,7 +132,12 @@ public class EditUserForm {
     String name = nameTextField.getText();
     String phoneNumber = phoneTextField.getText();
 
-    // Input Alter method here for database.
+    try {
+      user.updateUser(user_ID, name, phoneNumber);
+    } catch (Exception e) {
+      e.printStackTrace();
+      JOptionPane.showMessageDialog(null, "Failed to edit, please try again.");
+    }
 
     Runnable userWorker = new UserTableWorker(MainWindow.userModel);
     Thread userThread = new Thread(userWorker);

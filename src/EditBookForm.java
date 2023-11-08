@@ -21,7 +21,7 @@ public class EditBookForm {
 
   JButton saveButton;
 
-  User user = new User();
+  Book book = new Book();
 
   EditBookForm(JFrame frame, int book_ID, String title, String author, String genre) {
     dialog = new JDialog(frame);
@@ -153,7 +153,12 @@ public class EditBookForm {
     String author = authorField.getText();
     String genre = genreList.getSelectedItem().toString();
 
-    // Input Alter method here for database.
+    try {
+      book.updateBook(book_ID, title, author, genre);
+    } catch (Exception e) {
+      e.printStackTrace();
+      JOptionPane.showMessageDialog(null, "Failed to edit, please try again.");
+    }
 
     Runnable bookWorker = new BookTableWorker(MainWindow.bookModel);
     Thread bookThread = new Thread(bookWorker);
