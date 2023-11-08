@@ -71,4 +71,18 @@ public class User {
       e.printStackTrace();
     }
   }
+    public void updateUser(int userID, String name, String phoneNumber) {
+    try{
+      connection = DriverManager.getConnection(url, username, password);
+      try{
+        String sql = "UPDATE user SET fullName = '" + name + "', phoneNumber = '" + phoneNumber + "' WHERE user_id = " + userID;
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.executeUpdate(sql);
+      } catch (SQLException e){
+        e.printStackTrace();
+      }
+    } catch (SQLException e){
+      e.printStackTrace();
+    }
+  }
 }

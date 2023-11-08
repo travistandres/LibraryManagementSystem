@@ -12,13 +12,13 @@ public class Book {
     
     private Connection connection;
     Book(){}
-    public void deleteBook(int id) throws SQLException{
+    public void deleteBook(int bookID) throws SQLException{
       try{
         connection = DriverManager.getConnection(url, username, password);
         try{
           String sql = "DELETE FROM book WHERE book_id = ?";
           PreparedStatement ps = connection.prepareStatement(sql);
-          ps.setInt(1, id);
+          ps.setInt(1, bookID);
           ps.executeUpdate();
         } catch (Exception e){
           e.printStackTrace();
@@ -127,7 +127,20 @@ public class Book {
       }
       return available;
     }
-
+    public void updateBook(int bookID, String title, String author, String genre) {
+      try{
+        connection = DriverManager.getConnection(url, username, password);
+        try{
+          String sql = "UPDATE book SET title = '" + title + "', author = '" + author + "', genre = '" + genre + "' WHERE book_id = " + bookID;
+          PreparedStatement ps = connection.prepareStatement(sql);
+          ps.executeUpdate(sql);
+        } catch (SQLException e){
+          e.printStackTrace();
+        }
+      } catch (SQLException e){
+        e.printStackTrace();
+      }
+    }
     // J.E. 10/23/2020
     // Method to verify if the ISBN is a duplicate
     public static boolean verifyISBN(String isbn) 
