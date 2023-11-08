@@ -25,9 +25,9 @@ public class MainWindow {
 
   private int focusedPane = 0; // 1 will represent the userPane, 0 will represent the bookPane (if a third tab
                                // is added this will no longer work)
-  private String bookSearch = ""; // Holds the text in the search bar so when searching the textarea will be
-                                  // different depending on which table is being searched
-  private String userSearch = "";
+  private String bookSearch = "Search"; // Holds the text in the search bar so when searching the textarea will be
+  // different depending on which table is being searched
+  private String userSearch = "Search";
 
   private JButton addBook;
   private JButton addUser;
@@ -183,6 +183,8 @@ public class MainWindow {
       public void focusGained(FocusEvent e) {
         JTextField source = (JTextField) e.getComponent();
         source.setText("");
+        bookSearch = "";
+        userSearch = "";
         source.removeFocusListener(this);
       }
     });
