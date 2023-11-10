@@ -268,7 +268,11 @@ public class AddBook {
         String strippedISBN = isbn.replaceAll("[^0-9]", "");
         if(strippedISBN.length() == 13)
         {
-            formattedISBN = strippedISBN.substring(0, 3) + "-" + strippedISBN.substring(3, 4) + "-" + strippedISBN.substring(4, 6) + "-" + strippedISBN.substring(6, 12) + "-" + strippedISBN.substring(12, 13);
+            formattedISBN = strippedISBN.substring(0, 3) 
+            + "-" + strippedISBN.substring(3, 4) 
+            + "-" + strippedISBN.substring(4, 9) 
+            + "-" + strippedISBN.substring(9, 12) 
+            + "-" + strippedISBN.substring(12, 13);
         }
         return formattedISBN;
     }
