@@ -6,13 +6,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import java.sql.Connection;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 public class AddBook {
     public static void openBookGUI(JFrame parent) {
         // Create the main JFrame for the Add Book GUI
@@ -88,23 +81,40 @@ public class AddBook {
                     return;
                 }
 
+
+                // Save the text entered in the text fields
+                String titleText = title.getText();
+                String authorText = author.getText();
+                String genreText = genreList.getSelectedItem().toString();
+                String isbnString = formatISBN(isbn.getText());
+
+                
+                // Check if the ISBN is of correct length
+                if(verifyLength(isbnString) == false)
+                {
+                    JOptionPane.showMessageDialog(null, "ISBN is not the correct length.", "Error Message",
+                    JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+
                 if(Book.verifyISBN(isbn.getText()))
                 {
                     JOptionPane.showMessageDialog(null, "ISBN is already taken.", "Error Message",
                     JOptionPane.ERROR_MESSAGE);
                     return;
-                }                                                                                                  
+                }
 
-                // Save the text entered in the text fields
-                String titleText = title.getText();
-                String isbnString = isbn.getText();
-                String authorText = author.getText();
-                String genreText = genreList.getSelectedItem().toString();
+
                 // Try catch block for the addBook method
                 try 
                 {
                     Book book = new Book();
                     book.addBook(titleText, authorText, isbnString, genreText); // Call the addBook method in the Book class to add the book to the database
+                    Runnable bookWorker = new BookTableWorker(MainWindow.bookModel);
+                    Thread bookThread = new Thread(bookWorker);
+                    bookThread.start();
+                    MainWindow.bookModel.setRowCount(0);
                     addBookFrame.dispose(); // Close the Add Book GUI
                 } catch (Exception exception) {
                     errorPopup();
@@ -146,25 +156,41 @@ public class AddBook {
                 }
 
 
+                // Save the text entered in the text fields
+                String titleText = title.getText();
+                String authorText = author.getText();
+                String genreText = genreList.getSelectedItem().toString();
+                String isbnString = formatISBN(isbn.getText());
+
+
+                // Check if the ISBN is of correct length
+                if(verifyLength(isbnString) == false)
+                {
+                    JOptionPane.showMessageDialog(null, "ISBN is not the correct length.", "Error Message",
+                    JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+
                 // Check if the ISBN is a duplicate
-                if(Book.verifyISBN(isbn.getText()))
+                if(Book.verifyISBN(isbnString))
                 {
                     JOptionPane.showMessageDialog(null, "ISBN is already taken.", "Error Message",
                     JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
-                // Save the text entered in the text fields
-                String titleText = title.getText();
-                String isbnString = isbn.getText();
-                String authorText = author.getText();
-                String genreText = genreList.getSelectedItem().toString();
+                
                 // Call the addBook method in the Book class to add the book to the database
                 // Try catch block for the addBook method
                 try 
                 {
                     Book book = new Book();
                     book.addBook(titleText, authorText, isbnString, genreText); // Call the addBook method in the Book class to add the book to the database
+                    Runnable bookWorker = new BookTableWorker(MainWindow.bookModel);
+                    Thread bookThread = new Thread(bookWorker);
+                    bookThread.start();
+                    MainWindow.bookModel.setRowCount(0);
                     openBookGUI(parent); // Open another Add Book GUI
                     addBookFrame.dispose(); // Close the Add Book GUI
                 } catch (Exception exception) {
@@ -235,5 +261,25 @@ public class AddBook {
         errorFrame.setVisible(true);
     }
 
-    
+    // Method to insure proper ISBN format
+    public static String formatISBN(String isbn)
+    {
+        String formattedISBN = "";
+        String strippedISBN = isbn.replaceAll("[^0-9]", "");
+        if(strippedISBN.length() == 13)
+        {
+            formattedISBN = strippedISBN.substring(0, 3) + "-" + strippedISBN.substring(3, 4) + "-" + strippedISBN.substring(4, 6) + "-" + strippedISBN.substring(6, 12) + "-" + strippedISBN.substring(12, 13);
+        }
+        return formattedISBN;
+    }
+
+    // Method to check if ISBN is correct
+    public static boolean verifyLength(String isbn)
+    {
+        if(isbn.length() == 17)
+        {
+            return true;
+        }
+        return false;
+    }
 }
