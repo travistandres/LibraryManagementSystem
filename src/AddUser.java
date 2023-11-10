@@ -86,6 +86,10 @@ public class AddUser {
                 try {
                     User user = new User();
                     user.addUser(fullName, phoneNumber);
+                    Runnable userWorker = new UserTableWorker(MainWindow.userModel);
+                    Thread userThread = new Thread(userWorker);
+                    userThread.start();
+                    MainWindow.userModel.setRowCount(0);
                     addUserFrame.dispose(); // Close the Add User GUI
                 } catch (Exception exception) {
                     errorPopup();
@@ -134,6 +138,10 @@ public class AddUser {
                 try {
                     User user = new User();
                     user.addUser(fullName, phoneNumber);
+                    Runnable userWorker = new UserTableWorker(MainWindow.userModel);
+                    Thread userThread = new Thread(userWorker);
+                    userThread.start();
+                    MainWindow.userModel.setRowCount(0);
                     addUserFrame.dispose(); // Close the Add User GUI
                     openAddUserGUI(parent); // Open another Add User GUI
                 } catch (Exception exception) {
