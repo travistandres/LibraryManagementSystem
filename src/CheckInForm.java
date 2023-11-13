@@ -7,6 +7,8 @@ import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -92,6 +94,17 @@ public class CheckInForm {
     // only one row can be highlighted
     transactionTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
+    // Enabling Check-In Button when Table is in Focus
+    transactionTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+      public void valueChanged(ListSelectionEvent event) {
+        checkIn.setEnabled(true);
+
+        if (transactionTable.getSelectionModel().isSelectionEmpty()) {
+          checkIn.setEnabled(false);
+        }
+      }
+    });
+
     // This block of code makes the Transaction ID invisible but still holds data
     TableColumn column = transactionTable.getColumnModel().getColumn(3);
     column.setMinWidth(0);
@@ -114,6 +127,7 @@ public class CheckInForm {
     // Check In Button
     checkIn = new JButton("Check-In");
     checkIn.setAlignmentX(Component.CENTER_ALIGNMENT);
+    checkIn.setEnabled(false);
     tablePanel.add(Box.createRigidArea(new Dimension(0, 10)));
     tablePanel.add(checkIn);
 
