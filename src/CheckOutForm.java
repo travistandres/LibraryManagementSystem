@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -13,12 +15,20 @@ import java.util.Calendar;
 import java.util.Properties;
 import javax.swing.*;
 import javax.swing.JFormattedTextField.AbstractFormatter;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import org.jdatepicker.impl.*;
 
 public class CheckOutForm {
   JDialog dialog;
+
+  private int focusedPane = 0;
+  private String bookSearch = "Search";
+  private String userSearch = "Search";
 
   JLabel userIDLabel;
   JLabel bookIDLabel;
@@ -197,6 +207,8 @@ public class CheckOutForm {
       public void focusGained(FocusEvent e) {
         JTextField source = (JTextField) e.getComponent();
         source.setText("");
+        bookSearch = "";
+        userSearch = "";
         source.removeFocusListener(this);
       }
     });
@@ -246,6 +258,46 @@ public class CheckOutForm {
     // can only highlight one row at a time
     userTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
+    // Adding function to Search Bar DW 11/2/2023
+    Searching search = new Searching();
+
+    KeyListener keylistener = new KeyListener() {
+      public void keyPressed(KeyEvent keyEvent) {
+      }
+
+      @Override
+      public void keyTyped(KeyEvent e) {
+      }
+
+      @Override
+      public void keyReleased(KeyEvent e) {
+        if (focusedPane != 1) {
+          search.search(searchBar.getText(), bookModel, bookTable);
+        } else {
+          search.search(searchBar.getText(), userModel, userTable);
+        }
+      }
+    };
+    searchBar.addKeyListener(keylistener);
+
+    // DW 11/13/2023 populating text field with selected ID
+    bookTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+      public void valueChanged(ListSelectionEvent event) {
+        int bookTableFocus = bookTable.getSelectedRow();
+        if (bookTableFocus >= 0) {
+          bookField.setText(bookTable.getValueAt(bookTableFocus, 0).toString());
+        }
+      }
+    });
+    userTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+      public void valueChanged(ListSelectionEvent event) {
+        int userTableFocus = userTable.getSelectedRow();
+        if (userTableFocus >= 0) {
+          userField.setText(userTable.getValueAt(userTableFocus, 0).toString());
+        }
+      }
+    });
+
     // Adding User Table to the Scroll Pane
     JScrollPane userPane = new JScrollPane(userTable);
 
@@ -261,6 +313,26 @@ public class CheckOutForm {
     tablePane.add("Users", userPane);
     tablePane.setPreferredSize(new Dimension(420, 350));
     rightPanel.add(tablePane);
+
+    // Add Listener to know which pane has focus
+    tablePane.addChangeListener(new ChangeListener() {
+      @Override
+      public void stateChanged(ChangeEvent e) {
+        if (focusedPane == 0) {
+          bookSearch = searchBar.getText();
+          searchBar.setText(userSearch);
+          focusedPane = 1;
+          // TT 11-04-23 clears focus on the Book Table when other tab has focus
+          bookTable.clearSelection();
+        } else {
+          userSearch = searchBar.getText();
+          searchBar.setText(bookSearch);
+          focusedPane = 0;
+          // TT 11-04-23 clears focus on the User Table
+          userTable.clearSelection();
+        }
+      }
+    });
 
     dialog.setVisible(true);
   }
