@@ -8,7 +8,12 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
@@ -59,9 +64,12 @@ public class MainWindow {
     frame = new JFrame("Library Management System");
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.setSize(892, 653);
-    frame.setLocationRelativeTo(null);
     frame.setVisible(true);
+    frame.setLocationRelativeTo(null);
     frame.setResizable(false);
+
+    Image icon = Toolkit.getDefaultToolkit().getImage("./src/book-stack.png");
+    frame.setIconImage(icon);
 
     // Main Page
     JPanel main = new JPanel(new BorderLayout());
