@@ -9,25 +9,28 @@ import java.awt.event.ActionListener;
 public class AddUser {
     public static void openAddUserGUI(JFrame parent) {
         // Create the main JFrame for the Add User GUI
-        JFrame addUserFrame = new JFrame("Add User");
-        addUserFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        addUserFrame.setSize(400, 550);
-        addUserFrame.setLocationRelativeTo(parent);
+        JDialog dialog = new JDialog(parent);
+        dialog.setTitle("Add User Form");
+        dialog.setSize(300, 350);
+        dialog.setLocationRelativeTo(parent);
+        dialog.setResizable(false);
 
         // Create a main panel with GridBagLayout and add some padding
-        JPanel mainPanel = new JPanel(new GridBagLayout());
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        addUserFrame.add(mainPanel);
-
-        // Create a panel for the title label
-        JPanel titlePanel = new JPanel();
-        JLabel titleLabel = new JLabel("Add User");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        titlePanel.add(titleLabel);
+        // TT 11-13-23 Created a Main panel with a BoxLayout
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        mainPanel.setSize(300, 350);
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        dialog.add(mainPanel);
 
         // Create a panel for the text fields with padding
-        JPanel textFieldPanel = new JPanel(new GridLayout(4, 2, 40, 20));
-        textFieldPanel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
+        JPanel textFieldPanel = new JPanel();
+        textFieldPanel.setPreferredSize(new Dimension(400, 0));
+        textFieldPanel.setLayout(new GridBagLayout());
+        textFieldPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("Add User"),
+                BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+
+        GridBagConstraints gbc = new GridBagConstraints();
 
         JLabel firstNameLabel = new JLabel("First Name:");
         JTextField firstName = new JTextField();
@@ -36,44 +39,77 @@ public class AddUser {
         JLabel phoneLabel = new JLabel("Phone Number:");
         JTextField phone = new JTextField();
 
+        // First Name Label
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(5, 5, 5, 5);
+        textFieldPanel.add(firstNameLabel, gbc);
 
-        textFieldPanel.add(firstNameLabel);
-        textFieldPanel.add(firstName);
-        textFieldPanel.add(lastNameLabel);
-        textFieldPanel.add(lastName);
-        textFieldPanel.add(phoneLabel);
-        textFieldPanel.add(phone);
+        // Last Name Label
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(5, 5, 5, 5);
+        textFieldPanel.add(lastNameLabel, gbc);
+
+        // Phone Label
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(5, 5, 5, 5);
+        textFieldPanel.add(phoneLabel, gbc);
+
+        // First Name Text Field
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.weightx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(5, 5, 5, 5);
+        textFieldPanel.add(firstName, gbc);
+
+        // Last Name Text Field
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.weightx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(5, 5, 5, 5);
+        textFieldPanel.add(lastName, gbc);
+
+        // Phone Text Field
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        gbc.weightx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(5, 5, 5, 5);
+        textFieldPanel.add(phone, gbc);
 
         // Create a panel for the Add and Add Another buttons with padding
         JPanel buttonPanel = new JPanel();
+        buttonPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
-        buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
-
+        buttonPanel.setPreferredSize(new Dimension(300, 50));
 
         // Add Button
         JButton addButton = new JButton("Add");
         addButton.setPreferredSize(new Dimension(115, 30)); // Set preferred size
         addButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) 
-            {
+            public void actionPerformed(ActionEvent e) {
                 // Check if any of the text fields are empty
-                if(firstName.getText().isEmpty())
-                {
+                if (firstName.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Please enter a first name.", "Error Message",
-                    JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                if(lastName.getText().isEmpty())
-                {
+                if (lastName.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Please enter a last name.", "Error Message",
-                    JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                if(phone.getText().isEmpty())
-                {
+                if (phone.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Please enter a phone number.", "Error Message",
-                    JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
@@ -90,7 +126,7 @@ public class AddUser {
                     Thread userThread = new Thread(userWorker);
                     userThread.start();
                     MainWindow.userModel.setRowCount(0);
-                    addUserFrame.dispose(); // Close the Add User GUI
+                    dialog.dispose(); // Close the Add User GUI
                 } catch (Exception exception) {
                     errorPopup();
                     exception.printStackTrace();
@@ -102,30 +138,25 @@ public class AddUser {
         buttonPanel.add(addButton);
         buttonPanel.add(Box.createRigidArea(new Dimension(10, 0))); // Space between buttons
 
-
         // Add Another Button
         JButton addAnotherButton = new JButton("Add Another");
         addAnotherButton.setPreferredSize(new Dimension(115, 30)); // Set preferred size
         addAnotherButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) 
-            {
-                if(firstName.getText().isEmpty())
-                {
+            public void actionPerformed(ActionEvent e) {
+                if (firstName.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Please enter a first name.", "Error Message",
-                    JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                if(lastName.getText().isEmpty())
-                {
+                if (lastName.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Please enter a last name.", "Error Message",
-                    JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                if(phone.getText().isEmpty())
-                {
+                if (phone.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Please enter a phone number.", "Error Message",
-                    JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
@@ -142,7 +173,7 @@ public class AddUser {
                     Thread userThread = new Thread(userWorker);
                     userThread.start();
                     MainWindow.userModel.setRowCount(0);
-                    addUserFrame.dispose(); // Close the Add User GUI
+                    dialog.dispose(); // Close the Add User GUI
                     openAddUserGUI(parent); // Open another Add User GUI
                 } catch (Exception exception) {
                     errorPopup();
@@ -153,7 +184,6 @@ public class AddUser {
 
         // Add glue components to center-align the buttons
         buttonPanel.add(addAnotherButton);
-        buttonPanel.add(Box.createHorizontalGlue());
 
         // Create a panel for the Cancel button with padding
         JPanel cancelButtonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -161,32 +191,18 @@ public class AddUser {
         closeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                addUserFrame.dispose(); // Close the Add User GUI
+                dialog.dispose(); // Close the Add User GUI
             }
         });
         cancelButtonPanel.add(closeButton);
 
-        // Specify GridBagLayout constraints to center-align the title panel
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.insets = new Insets(0, 0, 60, 0); // Add space below the title
-        mainPanel.add(titlePanel, gbc);
-
-        // Specify GridBagLayout constraints to center-align the text field panel
-        gbc.gridy = 1;
+        mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         mainPanel.add(textFieldPanel, gbc);
-
-        // Specify GridBagLayout constraints for the button panel
-        gbc.gridy = 2;
         mainPanel.add(buttonPanel, gbc);
-
-        // Specify GridBagLayout constraints for the close button panel
-        gbc.gridy = 3;
+        mainPanel.add(Box.createRigidArea(new Dimension(0, 70)));
         mainPanel.add(cancelButtonPanel, gbc);
 
-        // Make the main frame visible
-        addUserFrame.setVisible(true);
+        dialog.setVisible(true);
     }
 
     // Method to make an error popup for when adding a user fails

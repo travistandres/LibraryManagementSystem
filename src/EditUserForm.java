@@ -31,7 +31,7 @@ public class EditUserForm {
     // Main Panel
     JPanel mainPanel = new JPanel();
     mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-    mainPanel.setSize(200, 300);
+    mainPanel.setSize(300, 350);
     mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
     dialog.add(mainPanel);
 

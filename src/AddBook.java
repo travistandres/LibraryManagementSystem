@@ -9,25 +9,28 @@ import java.awt.event.ActionListener;
 public class AddBook {
     public static void openBookGUI(JFrame parent) {
         // Create the main JFrame for the Add Book GUI
-        JFrame addBookFrame = new JFrame("Add Book");
-        addBookFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        addBookFrame.setSize(400, 550);
-        addBookFrame.setLocationRelativeTo(parent);
+        JDialog dialog = new JDialog(parent);
+        dialog.setTitle("Add Book Form");
+        dialog.setSize(300, 350);
+        dialog.setLocationRelativeTo(parent);
+        dialog.setResizable(false);
 
-        // Create a main panel with GridBagLayout and add some padding
-        JPanel mainPanel = new JPanel(new GridBagLayout());
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        addBookFrame.add(mainPanel);
-
-        // Create a panel for the title label
-        JPanel titlePanel = new JPanel();
-        JLabel windowLabel = new JLabel("Add Book");
-        windowLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        titlePanel.add(windowLabel);
+        // Main Panel
+        // TT 11-13-23 Created a Main panel with a BoxLayout
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        mainPanel.setSize(300, 350);
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        dialog.add(mainPanel);
 
         // Create a panel for the text fields with padding
-        JPanel textFieldPanel = new JPanel(new GridLayout(4, 2, 40, 20));
-        textFieldPanel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
+        JPanel textFieldPanel = new JPanel();
+        textFieldPanel.setPreferredSize(new Dimension(400, 0));
+        textFieldPanel.setLayout(new GridBagLayout());
+        textFieldPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("Add Book"),
+                BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+
+        GridBagConstraints gbc = new GridBagConstraints();
 
         JLabel titleLabel = new JLabel("Title:");
         JTextField title = new JTextField();
@@ -36,51 +39,99 @@ public class AddBook {
         JLabel authorLabel = new JLabel("Author:");
         JTextField author = new JTextField();
         JLabel genreLabel = new JLabel("Genre:");
-        String[] genreStrings = { "Fiction", "NonFiction", "Mystery", "Young Adult", "Science Fiction", "Fantasy", "Horror", "Romance", "Historical Fiction", "Other" };
+        String[] genreStrings = { "Fiction", "NonFiction", "Mystery", "Young Adult", "Science Fiction", "Fantasy",
+                "Horror", "Romance", "Historical Fiction", "Other" };
         JComboBox genreList = new JComboBox(genreStrings);
 
+        // TT 11-13-23
+        // Layout Properties and adding it to the textFieldPanel
+        // Title Label
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(5, 5, 5, 5);
+        textFieldPanel.add(titleLabel, gbc);
 
-        textFieldPanel.add(titleLabel);
-        textFieldPanel.add(title);
-        textFieldPanel.add(isbnLabel);
-        textFieldPanel.add(isbn);
-        textFieldPanel.add(authorLabel);
-        textFieldPanel.add(author);
-        textFieldPanel.add(genreLabel);
-        textFieldPanel.add(genreList);
+        // Author Label
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(5, 5, 5, 5);
+        textFieldPanel.add(authorLabel, gbc);
+
+        // Genre Label
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(5, 5, 5, 5);
+        textFieldPanel.add(genreLabel, gbc);
+
+        // ISBN Label
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(5, 5, 5, 5);
+        textFieldPanel.add(isbnLabel, gbc);
+
+        // Title Text Field
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.weightx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(5, 5, 5, 5);
+        textFieldPanel.add(title, gbc);
+
+        // Author Text Field
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.weightx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(5, 5, 5, 5);
+        textFieldPanel.add(author, gbc);
+
+        // Genre ComboBox
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        gbc.weightx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(5, 5, 5, 5);
+        textFieldPanel.add(genreList, gbc);
+
+        // ISBN Text Field
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        gbc.weightx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(5, 5, 5, 5);
+        textFieldPanel.add(isbn, gbc);
 
         // Create a panel for the Add and Add Another buttons with padding
         JPanel buttonPanel = new JPanel();
+        buttonPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
-        buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
-
+        buttonPanel.setPreferredSize(new Dimension(300, 50));
 
         // Add Button
         JButton addButton = new JButton("Add");
-        addButton.setPreferredSize(new Dimension(115, 30)); // Set preferred size
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Check if any of the text fields are empty
-                if(title.getText().isEmpty())
-                {
+                if (title.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Please enter a title.", "Error Message",
-                    JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                if(isbn.getText().isEmpty())
-                {
+                if (isbn.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Please enter an ISBN.", "Error Message",
-                    JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                if(author.getText().isEmpty())
-                {
+                if (author.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Please enter an author.", "Error Message",
-                    JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-
 
                 // Save the text entered in the text fields
                 String titleText = title.getText();
@@ -88,73 +139,62 @@ public class AddBook {
                 String genreText = genreList.getSelectedItem().toString();
                 String isbnString = formatISBN(isbn.getText());
 
-                
                 // Check if the ISBN is of correct length
-                if(verifyLength(isbnString) == false)
-                {
+                if (verifyLength(isbnString) == false) {
                     JOptionPane.showMessageDialog(null, "ISBN is not the correct length.", "Error Message",
-                    JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
-
-                if(Book.verifyISBN(isbn.getText()))
-                {
+                if (Book.verifyISBN(isbn.getText())) {
                     JOptionPane.showMessageDialog(null, "ISBN is already taken.", "Error Message",
-                    JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-
 
                 // Try catch block for the addBook method
-                try 
-                {
+                try {
                     Book book = new Book();
-                    book.addBook(titleText, authorText, isbnString, genreText); // Call the addBook method in the Book class to add the book to the database
+                    book.addBook(titleText, authorText, isbnString, genreText); // Call the addBook method in the Book
+                                                                                // class to add the book to the database
                     Runnable bookWorker = new BookTableWorker(MainWindow.bookModel);
                     Thread bookThread = new Thread(bookWorker);
                     bookThread.start();
                     MainWindow.bookModel.setRowCount(0);
-                    addBookFrame.dispose(); // Close the Add Book GUI
+                    dialog.dispose(); // Close the Add Book GUI
                 } catch (Exception exception) {
-                    errorPopup();
+                    JOptionPane.showMessageDialog(null, "Failed to add, please try again.", "Error Message",
+                            JOptionPane.ERROR_MESSAGE);
                     exception.printStackTrace();
                 }
             }
         });
-
 
         // Add some rigid space between the buttons
         buttonPanel.add(addButton);
         buttonPanel.add(Box.createRigidArea(new Dimension(10, 0))); // Space between buttons
 
-
         // Add Another Button
         JButton addAnotherButton = new JButton("Add Another");
-        addAnotherButton.setPreferredSize(new Dimension(115, 30)); // Set preferred size
         addAnotherButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Check if any of the text fields are empty
-                if(title.getText().isEmpty())
-                {
+                if (title.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Please enter a title.", "Error Message",
-                    JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                if(isbn.getText().isEmpty())
-                {
+                if (isbn.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Please enter an ISBN.", "Error Message",
-                    JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                if(author.getText().isEmpty())
-                {
+                if (author.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Please enter an author.", "Error Message",
-                    JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-
 
                 // Save the text entered in the text fields
                 String titleText = title.getText();
@@ -162,49 +202,42 @@ public class AddBook {
                 String genreText = genreList.getSelectedItem().toString();
                 String isbnString = formatISBN(isbn.getText());
 
-
                 // Check if the ISBN is of correct length
-                if(verifyLength(isbnString) == false)
-                {
+                if (verifyLength(isbnString) == false) {
                     JOptionPane.showMessageDialog(null, "ISBN is not the correct length.", "Error Message",
-                    JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-
 
                 // Check if the ISBN is a duplicate
-                if(Book.verifyISBN(isbnString))
-                {
+                if (Book.verifyISBN(isbnString)) {
                     JOptionPane.showMessageDialog(null, "ISBN is already taken.", "Error Message",
-                    JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
-                
                 // Call the addBook method in the Book class to add the book to the database
                 // Try catch block for the addBook method
-                try 
-                {
+                try {
                     Book book = new Book();
-                    book.addBook(titleText, authorText, isbnString, genreText); // Call the addBook method in the Book class to add the book to the database
+                    book.addBook(titleText, authorText, isbnString, genreText); // Call the addBook method in the Book
+                                                                                // class to add the book to the database
                     Runnable bookWorker = new BookTableWorker(MainWindow.bookModel);
                     Thread bookThread = new Thread(bookWorker);
                     bookThread.start();
                     MainWindow.bookModel.setRowCount(0);
                     openBookGUI(parent); // Open another Add Book GUI
-                    addBookFrame.dispose(); // Close the Add Book GUI
+                    dialog.dispose(); // Close the Add Book GUI
                 } catch (Exception exception) {
-                    errorPopup();
+                    JOptionPane.showMessageDialog(null, "Failed to add, please try again.", "Error Message",
+                            JOptionPane.ERROR_MESSAGE);
                     exception.printStackTrace();
                 }
             }
         });
 
-
         // Add glue components to center-align the buttons
         buttonPanel.add(addAnotherButton);
-        buttonPanel.add(Box.createHorizontalGlue());
-
 
         // Create a panel for the Cancel button with padding
         JPanel cancelButtonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -212,76 +245,39 @@ public class AddBook {
         closeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                addBookFrame.dispose(); // Close the Add User GUI
+                dialog.dispose(); // Close the Add User GUI
             }
         });
         cancelButtonPanel.add(closeButton);
 
-
-        // Specify GridBagLayout constraints to center-align the title panel
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.insets = new Insets(0, 0, 60, 0); // Add space below the title
-        mainPanel.add(titlePanel, gbc);
-
-        // Specify GridBagLayout constraints to center-align the text field panel
-        gbc.gridy = 1;
-        mainPanel.add(textFieldPanel, gbc);
-
-        // Specify GridBagLayout constraints for the button panel
-        gbc.gridy = 2;
-        mainPanel.add(buttonPanel, gbc);
-
-        // Specify GridBagLayout constraints for the close button panel
-        gbc.gridy = 3;
-        mainPanel.add(cancelButtonPanel, gbc);
+        // Adding Panels to Main Panel
+        mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        mainPanel.add(textFieldPanel);
+        mainPanel.add(buttonPanel);
+        mainPanel.add(Box.createRigidArea(new Dimension(0, 40)));
+        mainPanel.add(cancelButtonPanel);
 
         // Make the main frame visible
-        addBookFrame.setVisible(true);
-    }
-
-
-    // Method to display an error popup
-    public static void errorPopup() 
-    {
-        JFrame errorFrame = new JFrame("Error");
-        errorFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        errorFrame.setSize(300, 150);
-        errorFrame.setLocationRelativeTo(null);
-
-        JPanel errorPanel = new JPanel(new GridBagLayout());
-        errorPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        errorFrame.add(errorPanel);
-
-        JLabel errorLabel = new JLabel("Error adding book.");
-        errorLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        errorPanel.add(errorLabel);
-
-        errorFrame.setVisible(true);
+        dialog.setVisible(true);
     }
 
     // Method to insure proper ISBN format
-    public static String formatISBN(String isbn)
-    {
+    public static String formatISBN(String isbn) {
         String formattedISBN = "";
         String strippedISBN = isbn.replaceAll("[^0-9]", "");
-        if(strippedISBN.length() == 13)
-        {
-            formattedISBN = strippedISBN.substring(0, 3) 
-            + "-" + strippedISBN.substring(3, 4) 
-            + "-" + strippedISBN.substring(4, 9) 
-            + "-" + strippedISBN.substring(9, 12) 
-            + "-" + strippedISBN.substring(12, 13);
+        if (strippedISBN.length() == 13) {
+            formattedISBN = strippedISBN.substring(0, 3)
+                    + "-" + strippedISBN.substring(3, 4)
+                    + "-" + strippedISBN.substring(4, 9)
+                    + "-" + strippedISBN.substring(9, 12)
+                    + "-" + strippedISBN.substring(12, 13);
         }
         return formattedISBN;
     }
 
     // Method to check if ISBN is correct
-    public static boolean verifyLength(String isbn)
-    {
-        if(isbn.length() == 17)
-        {
+    public static boolean verifyLength(String isbn) {
+        if (isbn.length() == 17) {
             return true;
         }
         return false;

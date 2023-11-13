@@ -33,13 +33,13 @@ public class EditBookForm {
     // Main Panel
     JPanel mainPanel = new JPanel();
     mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-    mainPanel.setSize(200, 300);
+    mainPanel.setSize(300, 350);
     mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
     dialog.add(mainPanel);
 
     // User Input Panel
     JPanel inputPanel = new JPanel();
-    inputPanel.setPreferredSize(new Dimension(400, 0));
+    inputPanel.setPreferredSize(new Dimension(300, 0));
     inputPanel.setLayout(new GridBagLayout());
     inputPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("Edit Book"),
         BorderFactory.createEmptyBorder(5, 5, 5, 5)));
@@ -103,7 +103,7 @@ public class EditBookForm {
 
     JPanel buttonPanel = new JPanel();
     buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
-    buttonPanel.setPreferredSize(new Dimension(400, 100));
+    buttonPanel.setPreferredSize(new Dimension(300, 100));
 
     // Save Button
     saveButton = new JButton("Save Changes");
