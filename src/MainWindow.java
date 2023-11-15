@@ -395,14 +395,23 @@ public class MainWindow {
             if (reply1 == JOptionPane.YES_OPTION) {
               // Deletes the data in the database
               int user_ID = Integer.valueOf((String) userTable.getModel().getValueAt(userSelectedRow, 0));
-              try {
-                user.deleteUser(user_ID);
-              } catch (Exception e1) {
-                JOptionPane.showMessageDialog(null, "Failed to remove, please try again.");
-                e1.printStackTrace();
+              // DW 11/15/2023 If the user has book(s) checked out bring window up for if deletion should be cancelled or books should be made available first
+              if (user.hasBookOut(user_ID)) {
+                String message2 = "The user you are trying to delete has books out. Pressing YES will delete the user and mark the books they have checked out as available, clicking No will cancel the deletion of this user.";
+                int reply2 = JOptionPane.showConfirmDialog(null, message2, "Remove User", JOptionPane.YES_NO_OPTION);
+                if (reply2 == JOptionPane.YES_OPTION) {
+                  try {
+                    user.deleteUser(user_ID);
+                  } catch (Exception e1) {
+                    JOptionPane.showMessageDialog(null, "Failed to remove, please try again.");
+                    e1.printStackTrace();
+                  }
+                  userModel.removeRow(userSelectedRow);
+                  JOptionPane.showMessageDialog(null, "User removed");
+                }
+              } else {
+                JOptionPane.showMessageDialog(null, "Removal of user canceled.");
               }
-              userModel.removeRow(userSelectedRow);
-              JOptionPane.showMessageDialog(null, "User removed");
             } else {
               JOptionPane.showMessageDialog(null, "Removal of user canceled.");
             }

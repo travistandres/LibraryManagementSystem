@@ -103,7 +103,6 @@ public class User {
             ResultSet rs = ps.executeQuery();
             boolean hasTransaction = rs.isBeforeFirst();
             if (!hasTransaction) {
-              System.out.println("User has no books out.");
               return false;
             }
           } 
@@ -114,7 +113,6 @@ public class User {
       } catch (SQLException e) {
             e.printStackTrace();
       }
-      System.out.println("User has book(s) out");
       return true;
     }
 }
