@@ -40,14 +40,15 @@ public class Transaction {
         try {
             connection = DriverManager.getConnection(url, username, password);
             try {
-                String userQuery = "SELECT user_id FROM user WHERE user_id LIKE " + userID;
+                String userQuery = "SELECT user_id FROM user WHERE user_id LIKE ?";
                 PreparedStatement userStatement = connection.prepareStatement(userQuery);
+                userStatement.setInt(1, userID);
                 ResultSet userSet = userStatement.executeQuery();
                 if (userSet.next()) {
-                    String query = "SELECT book_id, returnDate, transaction_id FROM transactions WHERE user_id = "
-                            + userID;
+                    String query = "SELECT book_id, returnDate, transaction_id FROM transactions WHERE user_id = ?";
                     PreparedStatement ps = connection.prepareStatement(query);
-                    ResultSet rs = ps.executeQuery(query);
+                    ps.setInt(1, userID);
+                    ResultSet rs = ps.executeQuery();
                     // TT 11-15-23
                     // Checks if the user has a transaction
                     boolean hasTransaction = rs.isBeforeFirst();
@@ -57,9 +58,10 @@ public class Transaction {
                     }
                     while (rs.next()) {
                         int bookID = rs.getInt("book_id");
-                        String bookQuery = "Select isbn, title From book where book_id = " + bookID;
+                        String bookQuery = "Select isbn, title From book where book_id = ?";
                         PreparedStatement bookStatement = connection.prepareStatement(bookQuery);
-                        ResultSet bookSet = bookStatement.executeQuery(bookQuery);
+                        bookStatement.setInt(1, bookID);
+                        ResultSet bookSet = bookStatement.executeQuery();
 
                         while (bookSet.next()) {
                             String isbn = bookSet.getString("isbn");
@@ -89,8 +91,9 @@ public class Transaction {
         try {
             connection = DriverManager.getConnection(url, username, password);
             try {
-                String sql = "DELETE FROM transactions WHERE transaction_id = " + transactionID;
+                String sql = "DELETE FROM transactions WHERE transaction_id = ?";
                 PreparedStatement ps = connection.prepareStatement(sql);
+                ps.setInt(1, transactionID);
                 ps.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -109,9 +112,9 @@ public class Transaction {
             int userID = -1, bookID = -1;
             boolean dataCopied;
             try {
-                String sql = "SELECT returnDate, user_id, book_id FROM transactions WHERE transaction_id = "
-                        + transactionID;
+                String sql = "SELECT returnDate, user_id, book_id FROM transactions WHERE transaction_id = ?";
                 PreparedStatement ps = connection.prepareStatement(sql);
+                ps.setInt(1, transactionID);
                 ResultSet rs = ps.executeQuery();
                 while (rs.next()) {
                     userID = rs.getInt("user_id");
