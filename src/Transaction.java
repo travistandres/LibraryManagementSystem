@@ -1,3 +1,4 @@
+
 //DW 11/3/2023
 import java.sql.Connection;
 import java.sql.Date;
@@ -14,10 +15,11 @@ public class Transaction {
     private final String password = "2QH03UdHKY8t9TT4PeSb"; // Your MySQL password
     private Connection connection;
     private Book book = new Book();
-    public void addTransaction(int bookID, int userID, Date returnDate) throws SQLException{
+
+    public void addTransaction(int bookID, int userID, Date returnDate) throws SQLException {
         try {
             connection = DriverManager.getConnection(url, username, password);
-            try{
+            try {
                 String sql = "INSERT INTO transactions (returnDate, user_id, book_id)" + "VALUES (?, ?, ?)";
                 PreparedStatement ps = connection.prepareStatement(sql);
                 ps.setDate(1, returnDate);
@@ -25,26 +27,35 @@ public class Transaction {
                 ps.setInt(3, bookID);
                 ps.executeUpdate();
                 book.makeUnavailable(bookID);
-            } catch (SQLException e){
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
             connection.close();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-    public void displayTransactionsForUser(DefaultTableModel transactionModel, int userID){
-        try{
+
+    public void displayTransactionsForUser(DefaultTableModel transactionModel, int userID) {
+        try {
             connection = DriverManager.getConnection(url, username, password);
-            try{
+            try {
                 String userQuery = "SELECT user_id FROM user WHERE user_id LIKE " + userID;
                 PreparedStatement userStatement = connection.prepareStatement(userQuery);
                 ResultSet userSet = userStatement.executeQuery();
                 if (userSet.next()) {
-                    String query = "SELECT book_id, returnDate, transaction_id FROM transactions WHERE user_id = " + userID;
+                    String query = "SELECT book_id, returnDate, transaction_id FROM transactions WHERE user_id = "
+                            + userID;
                     PreparedStatement ps = connection.prepareStatement(query);
                     ResultSet rs = ps.executeQuery(query);
-                    if (rs.next()){
+                    // TT 11-15-23
+                    // Checks if the user has a transaction
+                    boolean hasTransaction = rs.isBeforeFirst();
+                    if (!hasTransaction) {
+                        JOptionPane.showMessageDialog(null, "User ID does not have any transactions", "Error Message",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                    while (rs.next()) {
                         int bookID = rs.getInt("book_id");
                         String bookQuery = "Select isbn, title From book where book_id = " + bookID;
                         PreparedStatement bookStatement = connection.prepareStatement(bookQuery);
@@ -56,63 +67,67 @@ public class Transaction {
                             Date returnDate = rs.getDate("returnDate");
                             String transactionID = rs.getString("transaction_id");
 
-                            String[] data = {isbn, title, returnDate.toString(), transactionID};
+                            String[] data = { isbn, title, returnDate.toString(), transactionID };
                             transactionModel.addRow(data);
+
                         }
-                    } else {
-                        JOptionPane.showMessageDialog(null, "User ID does not have any transactions", "Error Message", JOptionPane.ERROR_MESSAGE);
                     }
                 } else {
-                    JOptionPane.showMessageDialog(null, "User ID not found!", "Error Message", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "User ID not found!", "Error Message",
+                            JOptionPane.ERROR_MESSAGE);
                 }
-            } catch (SQLException e){
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
             connection.close();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
-    } 
-    private void deleteTransaction(int transactionID) throws SQLException{
-        try{
+    }
+
+    private void deleteTransaction(int transactionID) throws SQLException {
+        try {
             connection = DriverManager.getConnection(url, username, password);
-            try{
-              String sql = "DELETE FROM transactions WHERE transaction_id = " + transactionID;
-              PreparedStatement ps = connection.prepareStatement(sql);
-              ps.executeUpdate();
-            } catch (SQLException e){
-              e.printStackTrace();
+            try {
+                String sql = "DELETE FROM transactions WHERE transaction_id = " + transactionID;
+                PreparedStatement ps = connection.prepareStatement(sql);
+                ps.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
             connection.close();
-          } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
-          }
+        }
     }
-    private boolean copyTransactionToLog(int transactionID, Date dateReturned) throws SQLException{
+
+    private boolean copyTransactionToLog(int transactionID, Date dateReturned) throws SQLException {
         boolean dataTransfered = false;
         try {
             connection = DriverManager.getConnection(url, username, password);
             Date returnDate = null;
             int userID = -1, bookID = -1;
             boolean dataCopied;
-            try{
-                String sql = "SELECT returnDate, user_id, book_id FROM transactions WHERE transaction_id = " + transactionID;
+            try {
+                String sql = "SELECT returnDate, user_id, book_id FROM transactions WHERE transaction_id = "
+                        + transactionID;
                 PreparedStatement ps = connection.prepareStatement(sql);
                 ResultSet rs = ps.executeQuery();
-                while (rs.next()){
+                while (rs.next()) {
                     userID = rs.getInt("user_id");
                     bookID = rs.getInt("book_id");
                     returnDate = rs.getDate("returnDate");
                     book.makeAvailable(bookID);
                 }
                 dataCopied = true;
-            } catch (SQLException e){
+            } catch (SQLException e) {
                 e.printStackTrace();
                 dataCopied = false;
             }
             if (dataCopied) {
-                try{
-                    String sql = "INSERT INTO transaction_log (returnDate, user_id, book_id, transaction_id, dateReturned)" + "VALUES (?, ?, ?, ?, ?)";
+                try {
+                    String sql = "INSERT INTO transaction_log (returnDate, user_id, book_id, transaction_id, dateReturned)"
+                            + "VALUES (?, ?, ?, ?, ?)";
                     PreparedStatement ps = connection.prepareStatement(sql);
                     ps.setDate(1, returnDate);
                     ps.setInt(2, userID);
@@ -121,22 +136,23 @@ public class Transaction {
                     ps.setDate(5, dateReturned);
                     ps.executeUpdate();
                     dataTransfered = true;
-                } catch (SQLException e){
+                } catch (SQLException e) {
                     e.printStackTrace();
                 }
             }
             connection.close();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return dataTransfered;
     }
-    public void logAndDelete(int transactionID, Date dateReturned){
-        try{
-            if (copyTransactionToLog(transactionID, dateReturned)){
+
+    public void logAndDelete(int transactionID, Date dateReturned) {
+        try {
+            if (copyTransactionToLog(transactionID, dateReturned)) {
                 deleteTransaction(transactionID);
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
