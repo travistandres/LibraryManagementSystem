@@ -136,6 +136,14 @@ public class AddUser {
                 String fullName = firstName.getText() + " " + lastName.getText();
                 String phoneNumber = phone.getText();
 
+                // Check if full name is longer than 30 characters
+                if(checkNameLength(fullName))
+                {
+                    JOptionPane.showMessageDialog(null, "Full name character limit is 30.", "Error Message",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
                 // Call the addUser method in the User class to add the user to the database
                 // Try catch block for the addUser method
                 try {
@@ -184,6 +192,14 @@ public class AddUser {
                 String fullName = firstName.getText() + " " + lastName.getText();
                 String phoneNumber = phone.getText();
 
+                // Check if full name is longer than 30 characters
+                if(checkNameLength(fullName))
+                {
+                    JOptionPane.showMessageDialog(null, "Full name character limit is 30.", "Error Message",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
                 // Call the addUser method in the User class to add the user to the database
                 // Try catch block for the addUser method
                 try {
@@ -224,5 +240,13 @@ public class AddUser {
         mainPanel.add(cancelButtonPanel, gbc);
 
         dialog.setVisible(true);
+    }
+
+    // method to check if name is longer than 30 characters
+    public static boolean checkNameLength(String name) {
+        if (name.length() > 30) {
+            return true;
+        }
+        return false;
     }
 }
