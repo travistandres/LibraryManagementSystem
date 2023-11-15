@@ -112,6 +112,16 @@ public class EditUserForm {
     saveButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
+        if (!(phoneTextField.getText().length() == 10)) {
+          JOptionPane.showMessageDialog(null, "Invalid Phone Number", "Error Message", JOptionPane.ERROR_MESSAGE);
+          return;
+        }
+
+        if (!(nameTextField.getText().contains(" "))) {
+          JOptionPane.showMessageDialog(null, "Invalid Name", "Error Message", JOptionPane.ERROR_MESSAGE);
+          return;
+        }
+
         try {
           getInput(user_ID);
           JOptionPane.showMessageDialog(null, "Edits have been saved.");
@@ -143,6 +153,23 @@ public class EditUserForm {
     mainPanel.add(buttonPanel);
     mainPanel.add(Box.createRigidArea(new Dimension(0, 20)));
     mainPanel.add(cancelPanel);
+
+    nameTextField.addKeyListener(new KeyAdapter() {
+      public void keyTyped(KeyEvent e) {
+
+        // TT 11-15-23 Max 30 Characters can input
+        if (nameTextField.getText().length() >= 30) {
+          e.consume();
+        }
+
+        // TT 11-15-23
+        // Makes sure to can't put a '*' on the text field
+        char c = e.getKeyChar();
+        if (c == '*') {
+          e.consume();
+        }
+      }
+    });
 
     dialog.setVisible(true);
   }

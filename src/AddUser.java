@@ -131,14 +131,19 @@ public class AddUser {
                             JOptionPane.ERROR_MESSAGE);
                     return;
                 }
+                // TT 11-15-23 checks to see if phone number is valid
+                if (!(phone.getText().length() == 10)) {
+                    JOptionPane.showMessageDialog(null, "Invalid Phone Number", "Error Message",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
 
                 // Save the text entered in the text fields
                 String fullName = firstName.getText() + " " + lastName.getText();
                 String phoneNumber = phone.getText();
 
                 // Check if full name is longer than 30 characters
-                if(checkNameLength(fullName))
-                {
+                if (checkNameLength(fullName)) {
                     JOptionPane.showMessageDialog(null, "Full name character limit is 30.", "Error Message",
                             JOptionPane.ERROR_MESSAGE);
                     return;
@@ -187,14 +192,19 @@ public class AddUser {
                             JOptionPane.ERROR_MESSAGE);
                     return;
                 }
+                // TT 11-15-23 checks to see if phone number is valid
+                if (!(phone.getText().length() == 10)) {
+                    JOptionPane.showMessageDialog(null, "Invalid Phone Number", "Error Message",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
 
                 // Save the text entered in the text fields
                 String fullName = firstName.getText() + " " + lastName.getText();
                 String phoneNumber = phone.getText();
 
                 // Check if full name is longer than 30 characters
-                if(checkNameLength(fullName))
-                {
+                if (checkNameLength(fullName)) {
                     JOptionPane.showMessageDialog(null, "Full name character limit is 30.", "Error Message",
                             JOptionPane.ERROR_MESSAGE);
                     return;
@@ -238,6 +248,40 @@ public class AddUser {
         mainPanel.add(buttonPanel, gbc);
         mainPanel.add(Box.createRigidArea(new Dimension(0, 70)));
         mainPanel.add(cancelButtonPanel, gbc);
+
+        firstName.addKeyListener(new KeyAdapter() {
+            public void keyTyped(KeyEvent e) {
+
+                // TT 11-15-23 Max 15 Characters can input
+                if (firstName.getText().length() >= 15) {
+                    e.consume();
+                }
+
+                // TT 11-15-23
+                // Makes sure to can't put a '*' on the text field
+                char c = e.getKeyChar();
+                if (c == '*') {
+                    e.consume();
+                }
+            }
+        });
+
+        lastName.addKeyListener(new KeyAdapter() {
+            public void keyTyped(KeyEvent e) {
+
+                // TT 11-15-23 Max 15 Characters can input
+                if (lastName.getText().length() >= 15) {
+                    e.consume();
+                }
+
+                // TT 11-15-23
+                // Makes sure to can't put a '*' on the text field
+                char c = e.getKeyChar();
+                if (c == '*') {
+                    e.consume();
+                }
+            }
+        });
 
         dialog.setVisible(true);
     }
