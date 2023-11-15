@@ -98,6 +98,8 @@ public class CheckOutForm {
     userField = new JTextField();
     bookField = new JTextField();
 
+    userField.setEditable(false);
+    bookField.setEditable(false);
     // ISBN JLabel
     m.gridx = 0;
     m.gridy = 0;
@@ -216,7 +218,7 @@ public class CheckOutForm {
     rightPanel.add(Box.createRigidArea(new Dimension(0, 5)));
 
     // Book Table Column Names
-    String[] columnNames = { "Book ID", "Title", "Author", "Genre", "ISBN" };
+    String[] columnNames = { "Book ID", "Title", "Author", "Genre", "ISBN", "Availability" };
 
     // Creating Book Table
     JTable bookTable = new JTable(new DefaultTableModel(null, columnNames));
@@ -231,6 +233,8 @@ public class CheckOutForm {
     bookTable.setDefaultEditor(Object.class, null);
     // can only highlight one row at a time
     bookTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    bookTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    bookTable.getColumnModel().getColumn(0).setMaxWidth(50);
 
     // Adding Book Table to the Scroll Pane
     JScrollPane bookPane = new JScrollPane(bookTable);
@@ -322,14 +326,10 @@ public class CheckOutForm {
           bookSearch = searchBar.getText();
           searchBar.setText(userSearch);
           focusedPane = 1;
-          // TT 11-04-23 clears focus on the Book Table when other tab has focus
-          bookTable.clearSelection();
         } else {
           userSearch = searchBar.getText();
           searchBar.setText(bookSearch);
           focusedPane = 0;
-          // TT 11-04-23 clears focus on the User Table
-          userTable.clearSelection();
         }
       }
     });
