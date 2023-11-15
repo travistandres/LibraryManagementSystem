@@ -79,9 +79,10 @@ public class Book {
       try{
         connection = DriverManager.getConnection(url, username, password);
         try {
-          String sql = "UPDATE book SET availability = " + 2 + " WHERE book_id = " + bookID;
+          String sql = "UPDATE book SET availability = " + 2 + " WHERE book_id = ?";
           PreparedStatement ps = connection.prepareStatement(sql);
-          ps.executeUpdate(sql);
+          ps.setInt(1, bookID);
+          ps.executeUpdate();
         } catch (SQLException e) {
           e.printStackTrace();
         }
@@ -94,9 +95,10 @@ public class Book {
       try{
         connection = DriverManager.getConnection(url, username, password);
         try {
-          String sql = "UPDATE book SET availability = " + 1 + " WHERE book_id = " + bookID;
+          String sql = "UPDATE book SET availability = " + 1 + " WHERE book_id = ?";
           PreparedStatement ps = connection.prepareStatement(sql);
-          ps.executeUpdate(sql);
+          ps.setInt(1, bookID);
+          ps.executeUpdate();
         } catch (SQLException e) {
           e.printStackTrace();
         }
@@ -110,9 +112,10 @@ public class Book {
       try{
         connection = DriverManager.getConnection(url, username, password);
         try {
-          String sql = "SELECT availability FROM book WHERE book_id = " + bookID;
+          String sql = "SELECT availability FROM book WHERE book_id = ?";
           PreparedStatement ps = connection.prepareStatement(sql);
-          ResultSet rs = ps.executeQuery(sql);
+          ps.setInt(1, bookID);
+          ResultSet rs = ps.executeQuery();
           while (rs.next()){
             if (rs.getString("availability").equals("Available")){
               available = true;
@@ -131,9 +134,13 @@ public class Book {
       try{
         connection = DriverManager.getConnection(url, username, password);
         try{
-          String sql = "UPDATE book SET title = '" + title + "', author = '" + author + "', genre = '" + genre + "' WHERE book_id = " + bookID;
+          String sql = "UPDATE book SET title = ?, author = ?, genre = ? WHERE book_id = ?";
           PreparedStatement ps = connection.prepareStatement(sql);
-          ps.executeUpdate(sql);
+          ps.setString(1, title);
+          ps.setString(2, author);
+          ps.setString(3, genre);
+          ps.setInt(4, bookID);
+          ps.executeUpdate();
         } catch (SQLException e){
           e.printStackTrace();
         }
