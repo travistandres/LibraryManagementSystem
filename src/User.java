@@ -75,9 +75,12 @@ public class User {
     try{
       connection = DriverManager.getConnection(url, username, password);
       try{
-        String sql = "UPDATE user SET fullName = '" + name + "', phoneNumber = '" + phoneNumber + "' WHERE user_id = " + userID;
+        String sql = "UPDATE user SET fullName = ?, phoneNumber = ? WHERE user_id = ?";
         PreparedStatement ps = connection.prepareStatement(sql);
-        ps.executeUpdate(sql);
+        ps.setString(1, name);
+        ps.setString(2, phoneNumber);
+        ps.setInt(3, userID);
+        ps.executeUpdate();
       } catch (SQLException e){
         e.printStackTrace();
       }
