@@ -5,6 +5,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class AddBook {
     public static void openBookGUI(JFrame parent) {
@@ -42,6 +44,24 @@ public class AddBook {
         String[] genreStrings = { "Fiction", "NonFiction", "Mystery", "Young Adult", "Science Fiction", "Fantasy",
                 "Horror", "Romance", "Historical Fiction", "Other" };
         JComboBox genreList = new JComboBox(genreStrings);
+
+        isbn.addKeyListener(new KeyAdapter() {
+            public void keyTyped(KeyEvent e) {
+
+                // TT 11-15-23 Max 17 Characters can input
+                if (isbn.getText().length() >= 17) {
+                    e.consume();
+                }
+
+                // TT 11-15-23
+                // Makes sure only numbers and '-' are in the text field
+                char c = e.getKeyChar();
+                if (!((c >= '0') && (c <= '9') || (c == '-') || (c == KeyEvent.VK_BACK_SPACE)
+                        || (c == KeyEvent.VK_DELETE))) {
+                    e.consume();
+                }
+            }
+        });
 
         // TT 11-13-23
         // Layout Properties and adding it to the textFieldPanel
@@ -131,6 +151,12 @@ public class AddBook {
                     JOptionPane.showMessageDialog(null, "Please enter an author.", "Error Message",
                             JOptionPane.ERROR_MESSAGE);
                     return;
+                }
+                if (title.getText().length() >= 50) {
+                    JOptionPane.showMessageDialog(null, "Only 50 Characters is allowed for title");
+                }
+                if (author.getText().length() >= 50) {
+                    JOptionPane.showMessageDialog(null, "Only 50 Characters is allowed for author");
                 }
 
                 // Save the text entered in the text fields
