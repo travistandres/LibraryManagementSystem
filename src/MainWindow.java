@@ -220,7 +220,7 @@ public class MainWindow {
     TABLE.add(Box.createRigidArea(new Dimension(0, 10)));
 
     // Book Table Column Names
-    String[] columnNames = { "Book ID", "Title", "Author", "Genre", "ISBN" };
+    String[] columnNames = { "Book ID", "Title", "Author", "Genre", "ISBN", "Availability" };
     // Creating Book Table
     bookTable = new JTable(new DefaultTableModel(null, columnNames));
     bookModel = (DefaultTableModel) bookTable.getModel();
@@ -234,6 +234,7 @@ public class MainWindow {
     bookTable.setDefaultEditor(Object.class, null);
     // can only highlight one row at a time
     bookTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    bookTable.getColumnModel().getColumn(0).setMaxWidth(70);
 
     // Adding Book Table to the Scroll Pane
     JScrollPane bookPane = new JScrollPane(bookTable);
