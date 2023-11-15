@@ -4,6 +4,8 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.text.SimpleDateFormat;
 
 import javax.swing.*;
@@ -177,6 +179,18 @@ public class CheckInForm {
     mainPanel.add(tablePanel);
     mainPanel.add(Box.createRigidArea(new Dimension(0, 15)));
     mainPanel.add(cancelPanel);
+
+    searchBar.addKeyListener(new KeyAdapter() {
+      public void keyTyped(KeyEvent e) {
+
+        // TT 11-15-23
+        // Makes sure only numbers are in the text field
+        char c = e.getKeyChar();
+        if (!((c >= '0') && (c <= '9') || (c == KeyEvent.VK_BACK_SPACE) || (c == KeyEvent.VK_DELETE))) {
+          e.consume();
+        }
+      }
+    });
 
     dialog.setVisible(true);
   }
