@@ -132,24 +132,17 @@ public class AddUser {
                     return;
                 }
 
-                // Check if first name is longer than 30 characters
-                if(checkNameLength(firstName.getText()))
-                {
-                    JOptionPane.showMessageDialog(null, "First name character limit is 30.", "Error Message",
-                            JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                // Check if last name is longer than 30 characters
-                if(checkNameLength(lastName.getText()))
-                {
-                    JOptionPane.showMessageDialog(null, "Last name character limit is 30.", "Error Message",
-                            JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
                 // Save the text entered in the text fields
                 String fullName = firstName.getText() + " " + lastName.getText();
                 String phoneNumber = phone.getText();
+
+                // Check if full name is longer than 30 characters
+                if(checkNameLength(fullName))
+                {
+                    JOptionPane.showMessageDialog(null, "Full name character limit is 30.", "Error Message",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
 
                 // Call the addUser method in the User class to add the user to the database
                 // Try catch block for the addUser method
@@ -195,24 +188,17 @@ public class AddUser {
                     return;
                 }
 
-                // Check if first name is longer than 30 characters
-                if(checkNameLength(firstName.getText()))
-                {
-                    JOptionPane.showMessageDialog(null, "First name character limit is 30.", "Error Message",
-                            JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                // Check if last name is longer than 30 characters
-                if(checkNameLength(lastName.getText()))
-                {
-                    JOptionPane.showMessageDialog(null, "First name character limit is 30.", "Error Message",
-                            JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
                 // Save the text entered in the text fields
                 String fullName = firstName.getText() + " " + lastName.getText();
                 String phoneNumber = phone.getText();
+
+                // Check if full name is longer than 30 characters
+                if(checkNameLength(fullName))
+                {
+                    JOptionPane.showMessageDialog(null, "Full name character limit is 30.", "Error Message",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
 
                 // Call the addUser method in the User class to add the user to the database
                 // Try catch block for the addUser method
