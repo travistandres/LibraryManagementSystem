@@ -132,6 +132,21 @@ public class AddUser {
                     return;
                 }
 
+                // Check if first name is longer than 30 characters
+                if(checkNameLength(firstName.getText()))
+                {
+                    JOptionPane.showMessageDialog(null, "First name character limit is 30.", "Error Message",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                // Check if last name is longer than 30 characters
+                if(checkNameLength(lastName.getText()))
+                {
+                    JOptionPane.showMessageDialog(null, "Last name character limit is 30.", "Error Message",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
                 // Save the text entered in the text fields
                 String fullName = firstName.getText() + " " + lastName.getText();
                 String phoneNumber = phone.getText();
@@ -180,6 +195,21 @@ public class AddUser {
                     return;
                 }
 
+                // Check if first name is longer than 30 characters
+                if(checkNameLength(firstName.getText()))
+                {
+                    JOptionPane.showMessageDialog(null, "First name character limit is 30.", "Error Message",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                // Check if last name is longer than 30 characters
+                if(checkNameLength(lastName.getText()))
+                {
+                    JOptionPane.showMessageDialog(null, "First name character limit is 30.", "Error Message",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
                 // Save the text entered in the text fields
                 String fullName = firstName.getText() + " " + lastName.getText();
                 String phoneNumber = phone.getText();
@@ -224,5 +254,13 @@ public class AddUser {
         mainPanel.add(cancelButtonPanel, gbc);
 
         dialog.setVisible(true);
+    }
+
+    // method to check if name is longer than 30 characters
+    public static boolean checkNameLength(String name) {
+        if (name.length() > 30) {
+            return true;
+        }
+        return false;
     }
 }
