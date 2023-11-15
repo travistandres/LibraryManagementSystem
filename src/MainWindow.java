@@ -401,12 +401,12 @@ public class MainWindow {
                 e1.printStackTrace();
               }
               userModel.removeRow(userSelectedRow);
-              JOptionPane.showMessageDialog(null, "Book removed");
+              JOptionPane.showMessageDialog(null, "User removed");
             } else {
-              JOptionPane.showMessageDialog(null, "Removal of book canceled.");
+              JOptionPane.showMessageDialog(null, "Removal of user canceled.");
             }
           } else {
-            JOptionPane.showMessageDialog(null, "Removal of book canceled.");
+            JOptionPane.showMessageDialog(null, "Removal of user canceled.");
           }
         }
       }

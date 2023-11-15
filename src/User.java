@@ -88,4 +88,33 @@ public class User {
       e.printStackTrace();
     }
   }
+    public boolean hasBookOut(int userID) {
+      try {
+        connection = DriverManager.getConnection(url, username, password);
+        try {
+          String userQuery = "SELECT user_id FROM user WHERE user_id LIKE ?";
+          PreparedStatement userStatement = connection.prepareStatement(userQuery);
+          userStatement.setInt(1, userID);
+          ResultSet userSet = userStatement.executeQuery();
+          if (userSet.next()) {
+            String query = "SELECT book_id, returnDate, transaction_id FROM transactions WHERE user_id = ?";
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setInt(1, userID);
+            ResultSet rs = ps.executeQuery();
+            boolean hasTransaction = rs.isBeforeFirst();
+            if (!hasTransaction) {
+              System.out.println("User has no books out.");
+              return false;
+            }
+          } 
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        connection.close();
+      } catch (SQLException e) {
+            e.printStackTrace();
+      }
+      System.out.println("User has book(s) out");
+      return true;
+    }
 }
