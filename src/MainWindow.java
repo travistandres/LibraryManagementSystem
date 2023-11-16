@@ -8,6 +8,7 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.sql.SQLException;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -351,32 +352,41 @@ public class MainWindow {
       public void actionPerformed(ActionEvent e) {
         // if Book Table is in focus, pops up a confirmation for removing selected book
         int bookSelectedRow = bookTable.getSelectedRow();
+        // DW 11/16 if selected book is out before deletion
         if (bookSelectedRow >= 0) {
-          String message = "Are you sure you want to remove \""
-              + bookTable.getModel().getValueAt(bookSelectedRow, 1)
-              + "\" by " + bookTable.getModel().getValueAt(bookSelectedRow, 2) + "?";
-          int reply = JOptionPane.showConfirmDialog(null, message, "Remove Book", JOptionPane.YES_NO_OPTION);
-          if (reply == JOptionPane.YES_OPTION) {
-            String message1 = "Are you REALLY sure you want to remove \""
-                + bookTable.getModel().getValueAt(bookSelectedRow, 1)
-                + "\" by " + bookTable.getModel().getValueAt(bookSelectedRow, 2) + "?  (This action cannot be undone)";
-            int reply1 = JOptionPane.showConfirmDialog(null, message1, "Remove Book", JOptionPane.YES_NO_OPTION);
-            if (reply1 == JOptionPane.YES_OPTION) {
-              // Deletes the data in the database
-              final int book_ID = Integer.valueOf((String) bookTable.getModel().getValueAt(bookSelectedRow, 0));
-              try {
-                book.deleteBook(book_ID);
-              } catch (Exception e1) {
-                JOptionPane.showMessageDialog(null, "Failed to remove, please try again.");
-                e1.printStackTrace();
+          try {
+            if (book.isAvailable(Integer.valueOf((String) bookTable.getModel().getValueAt(bookSelectedRow, 0)))){
+              String message = "Are you sure you want to remove \""
+                  + bookTable.getModel().getValueAt(bookSelectedRow, 1)
+                  + "\" by " + bookTable.getModel().getValueAt(bookSelectedRow, 2) + "?";
+              int reply = JOptionPane.showConfirmDialog(null, message, "Remove Book", JOptionPane.YES_NO_OPTION);
+              if (reply == JOptionPane.YES_OPTION) {
+                String message1 = "Are you REALLY sure you want to remove \""
+                    + bookTable.getModel().getValueAt(bookSelectedRow, 1)
+                    + "\" by " + bookTable.getModel().getValueAt(bookSelectedRow, 2) + "?  (This action cannot be undone)";
+                int reply1 = JOptionPane.showConfirmDialog(null, message1, "Remove Book", JOptionPane.YES_NO_OPTION);
+                if (reply1 == JOptionPane.YES_OPTION) {
+                  // Deletes the data in the database
+                  final int book_ID = Integer.valueOf((String) bookTable.getModel().getValueAt(bookSelectedRow, 0));
+                  try {
+                    book.deleteBook(book_ID);
+                  } catch (Exception e1) {
+                    JOptionPane.showMessageDialog(null, "Failed to remove, please try again.");
+                    e1.printStackTrace();
+                  }
+                  bookModel.removeRow(bookSelectedRow);
+                  JOptionPane.showMessageDialog(null, "Book removed");
+                } else {
+                  JOptionPane.showMessageDialog(null, "Removal of book canceled.");
+                }
+              } else {
+                JOptionPane.showMessageDialog(null, "Removal of book canceled.");
               }
-              bookModel.removeRow(bookSelectedRow);
-              JOptionPane.showMessageDialog(null, "Book removed");
             } else {
-              JOptionPane.showMessageDialog(null, "Removal of book canceled.");
+              JOptionPane.showMessageDialog(null, "This book is currently out and cannot be deleted as a result.");
             }
-          } else {
-            JOptionPane.showMessageDialog(null, "Removal of book canceled.");
+          } catch (SQLException e1){
+            e1.printStackTrace();
           }
         }
 
