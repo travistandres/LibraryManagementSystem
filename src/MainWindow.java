@@ -363,7 +363,7 @@ public class MainWindow {
             int reply1 = JOptionPane.showConfirmDialog(null, message1, "Remove Book", JOptionPane.YES_NO_OPTION);
             if (reply1 == JOptionPane.YES_OPTION) {
               // Deletes the data in the database
-              int book_ID = Integer.valueOf((String) bookTable.getModel().getValueAt(bookSelectedRow, 0));
+              final int book_ID = Integer.valueOf((String) bookTable.getModel().getValueAt(bookSelectedRow, 0));
               try {
                 book.deleteBook(book_ID);
               } catch (Exception e1) {
@@ -391,12 +391,12 @@ public class MainWindow {
             int reply = JOptionPane.showConfirmDialog(null, message, "Remove User", JOptionPane.YES_NO_OPTION);
             if (reply == JOptionPane.YES_OPTION) {
               String message1 = "Are you REALLY sure you want to remove \""
-                + userTable.getModel().getValueAt(userSelectedRow, 1)
-                + "\"? (This action cannot be undone)";
+                  + userTable.getModel().getValueAt(userSelectedRow, 1)
+                  + "\"? (This action cannot be undone)";
               int reply1 = JOptionPane.showConfirmDialog(null, message1, "Remove User", JOptionPane.YES_NO_OPTION);
               if (reply1 == JOptionPane.YES_OPTION) {
                 // Deletes the data in the database
-                int user_ID = Integer.valueOf((String) userTable.getModel().getValueAt(userSelectedRow, 0));
+                final int user_ID = Integer.valueOf((String) userTable.getModel().getValueAt(userSelectedRow, 0));
                 try {
                   user.deleteUser(user_ID);
                 } catch (Exception e1) {
@@ -411,8 +411,9 @@ public class MainWindow {
             } else {
               JOptionPane.showMessageDialog(null, "Removal of user canceled.");
             }
-          }else {
-          JOptionPane.showMessageDialog(null, "User has books out! This user cannot be deleted until all their books are checked-in");
+          } else {
+            JOptionPane.showMessageDialog(null,
+                "User has books out! This user cannot be deleted until all their books are checked-in");
           }
         }
       }

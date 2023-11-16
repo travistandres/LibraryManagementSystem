@@ -21,6 +21,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+
 import org.jdatepicker.impl.*;
 
 public class CheckOutForm {
@@ -221,7 +223,19 @@ public class CheckOutForm {
     String[] columnNames = { "Book ID", "Title", "Author", "Genre", "ISBN", "Availability" };
 
     // Creating Book Table
-    JTable bookTable = new JTable(new DefaultTableModel(null, columnNames));
+    JTable bookTable = new JTable(new DefaultTableModel(null, columnNames)) {
+      @Override
+      public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+        Component component = super.prepareRenderer(renderer, row, column);
+
+        String avail = bookModel.getValueAt(row, 5).toString();
+        if (avail.contains("Unavailable")) {
+          bookModel.removeRow(row);
+        }
+
+        return component;
+      }
+    };
     bookModel = (DefaultTableModel) bookTable.getModel();
     // Starts a thread to get Book Data from the database
     bookWorker = new BookTableWorker(bookModel);
@@ -233,8 +247,9 @@ public class CheckOutForm {
     bookTable.setDefaultEditor(Object.class, null);
     // can only highlight one row at a time
     bookTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    bookTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     bookTable.getColumnModel().getColumn(0).setMaxWidth(50);
+    bookTable.getColumnModel().getColumn(5).setMinWidth(0);
+    bookTable.getColumnModel().getColumn(5).setMaxWidth(0);
 
     // Adding Book Table to the Scroll Pane
     JScrollPane bookPane = new JScrollPane(bookTable);
