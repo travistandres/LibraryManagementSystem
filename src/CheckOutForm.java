@@ -228,8 +228,9 @@ public class CheckOutForm {
       public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
         Component component = super.prepareRenderer(renderer, row, column);
 
-        String avail = bookModel.getValueAt(row, 5).toString();
-        if (avail.contains("Unavailable")) {
+        Object avail = bookModel.getValueAt(row, 4);
+        System.out.println(row + " " + column);
+        if (avail.equals("Unavailable")) {
           bookModel.removeRow(row);
         }
 
