@@ -21,7 +21,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
 
 import org.jdatepicker.impl.*;
 
@@ -66,7 +65,7 @@ public class CheckOutForm {
     dialog = new JDialog(frame);
     dialog.setTitle("Check Out Form");
     // dialog.setLayout(new BorderLayout());
-    dialog.setSize(700, 438);
+    dialog.setSize(800, 438);
     dialog.setLocationRelativeTo(frame);
     dialog.setResizable(false);
 
@@ -223,23 +222,10 @@ public class CheckOutForm {
     String[] columnNames = { "Book ID", "Title", "Author", "Genre", "ISBN", "Availability" };
 
     // Creating Book Table
-    JTable bookTable = new JTable(new DefaultTableModel(null, columnNames)) {
-      @Override
-      public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
-        Component component = super.prepareRenderer(renderer, row, column);
-
-        Object avail = bookModel.getValueAt(row, 4);
-        System.out.println(row + " " + column);
-        if (avail.equals("Unavailable")) {
-          bookModel.removeRow(row);
-        }
-
-        return component;
-      }
-    };
+    JTable bookTable = new JTable(new DefaultTableModel(null, columnNames));
     bookModel = (DefaultTableModel) bookTable.getModel();
     // Starts a thread to get Book Data from the database
-    bookWorker = new BookTableWorker(bookModel);
+    bookWorker = new BookTableAvailable(bookModel);
     bookThread = new Thread(bookWorker);
     bookThread.start();
 
@@ -331,7 +317,7 @@ public class CheckOutForm {
     JTabbedPane tablePane = new JTabbedPane();
     tablePane.add("Books", bookPane);
     tablePane.add("Users", userPane);
-    tablePane.setPreferredSize(new Dimension(420, 350));
+    tablePane.setPreferredSize(new Dimension(520, 350));
     rightPanel.add(tablePane);
 
     // Add Listener to know which pane has focus
