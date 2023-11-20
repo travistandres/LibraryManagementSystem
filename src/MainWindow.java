@@ -57,7 +57,7 @@ public class MainWindow {
   MainWindow() {
 
     // Main Window
-    frame = new JFrame("Library Management System");
+    frame = new JFrame("BiblioTech");
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.setSize(892, 653);
     frame.setVisible(true);
@@ -355,7 +355,7 @@ public class MainWindow {
         // DW 11/16 if selected book is out before deletion
         if (bookSelectedRow >= 0) {
           try {
-            if (book.isAvailable(Integer.valueOf((String) bookTable.getModel().getValueAt(bookSelectedRow, 0)))){
+            if (book.isAvailable(Integer.valueOf((String) bookTable.getModel().getValueAt(bookSelectedRow, 0)))) {
               String message = "Are you sure you want to remove \""
                   + bookTable.getModel().getValueAt(bookSelectedRow, 1)
                   + "\" by " + bookTable.getModel().getValueAt(bookSelectedRow, 2) + "?";
@@ -363,7 +363,8 @@ public class MainWindow {
               if (reply == JOptionPane.YES_OPTION) {
                 String message1 = "Are you REALLY sure you want to remove \""
                     + bookTable.getModel().getValueAt(bookSelectedRow, 1)
-                    + "\" by " + bookTable.getModel().getValueAt(bookSelectedRow, 2) + "?  (This action cannot be undone)";
+                    + "\" by " + bookTable.getModel().getValueAt(bookSelectedRow, 2)
+                    + "?  (This action cannot be undone)";
                 int reply1 = JOptionPane.showConfirmDialog(null, message1, "Remove Book", JOptionPane.YES_NO_OPTION);
                 if (reply1 == JOptionPane.YES_OPTION) {
                   // Deletes the data in the database
@@ -385,7 +386,7 @@ public class MainWindow {
             } else {
               JOptionPane.showMessageDialog(null, "This book is currently out and cannot be deleted as a result.");
             }
-          } catch (SQLException e1){
+          } catch (SQLException e1) {
             e1.printStackTrace();
           }
         }
