@@ -159,4 +159,16 @@ public class Transaction {
             e.printStackTrace();
         }
     }
+
+    public boolean isLate(Date due) {
+        String[] dateDue = due.toString().split("-");
+        String[] turnedIn = java.time.LocalDate.now().toString().split("-");
+        
+        for (int i = 0; i < 3; i++){
+            if (Integer.parseInt(dateDue[i]) < Integer.parseInt(turnedIn[i])){
+                return true;
+            }
+        }
+        return false;
+    }
 }
