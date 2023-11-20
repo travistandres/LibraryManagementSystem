@@ -283,6 +283,26 @@ public class AddBook {
         mainPanel.add(Box.createRigidArea(new Dimension(0, 40)));
         mainPanel.add(cancelButtonPanel);
 
+        title.addKeyListener(new KeyAdapter() {
+            public void keyTyped(KeyEvent e) {
+
+                // TT 11-20-23 Max 9 Characters can input
+                if (title.getText().length() >= 50) {
+                    e.consume();
+                }
+            }
+        });
+
+        author.addKeyListener(new KeyAdapter() {
+            public void keyTyped(KeyEvent e) {
+
+                // TT 11-20-23 Max 9 Characters can input
+                if (author.getText().length() >= 50) {
+                    e.consume();
+                }
+            }
+        });
+
         // Make the main frame visible
         dialog.setVisible(true);
     }

@@ -183,6 +183,11 @@ public class CheckInForm {
     searchBar.addKeyListener(new KeyAdapter() {
       public void keyTyped(KeyEvent e) {
 
+        // TT 11-20-23 Max 9 Characters can input
+        if (searchBar.getText().length() >= 9) {
+          e.consume();
+        }
+
         // TT 11-15-23
         // Makes sure only numbers are in the text field
         char c = e.getKeyChar();
