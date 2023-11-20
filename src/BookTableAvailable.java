@@ -3,15 +3,13 @@ import java.sql.SQLException;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
-public class BookTableAvailable implements Runnable {
+public class BookTableAvailable extends BookTableWorker {
 
-  private Book book = new Book();
-  private DefaultTableModel model;
   private final Object lock = new Object();
   private boolean dataReady = false;
 
   BookTableAvailable(DefaultTableModel model) {
-    this.model = model;
+    super(model);
   }
 
   @Override
