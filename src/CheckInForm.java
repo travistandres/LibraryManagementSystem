@@ -71,6 +71,13 @@ public class CheckInForm {
           }
         }
 
+        for (int i = 0; i < transactionModel.getRowCount(); i++) {
+          String date = transactionModel.getValueAt(i, 2).toString();
+          if (transaction.isLate(date)) {
+            transactionModel.setValueAt("✔", i, 4);
+          }
+        }
+
       }
     };
 
@@ -86,7 +93,7 @@ public class CheckInForm {
     tablePanel.setLayout(new BoxLayout(tablePanel, BoxLayout.Y_AXIS));
 
     // Column Names
-    String columnNames[] = { "ISBN", "Book", "Return Date", "Transaction ID" };
+    String columnNames[] = { "ISBN", "Book", "Return Date", "Transaction ID", "Overdue" };
 
     // Creating Transaction Table
     JTable transactionTable = new JTable(new DefaultTableModel(null, columnNames));
