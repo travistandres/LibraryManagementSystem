@@ -102,6 +102,8 @@ public class CheckInForm {
     transactionTable.setDefaultEditor(Object.class, null);
     // only one row can be highlighted
     transactionTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    transactionTable.getColumnModel().getColumn(2).setMaxWidth(85);
+    transactionTable.getColumnModel().getColumn(4).setMaxWidth(65);
 
     // Enabling Check-In Button when Table is in Focus
     transactionTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
