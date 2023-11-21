@@ -160,12 +160,13 @@ public class Transaction {
         }
     }
 
-    public boolean isLate(Date due) {
-        String[] dateDue = due.toString().split("-");
+    // TT 11-21-23 changed parameter to String
+    public boolean isLate(String due) {
+        String[] dateDue = due.split("-");
         String[] turnedIn = java.time.LocalDate.now().toString().split("-");
-        
-        for (int i = 0; i < 3; i++){
-            if (Integer.parseInt(dateDue[i]) < Integer.parseInt(turnedIn[i])){
+
+        for (int i = 0; i < 3; i++) {
+            if (Integer.parseInt(dateDue[i]) < Integer.parseInt(turnedIn[i])) {
                 return true;
             }
         }
